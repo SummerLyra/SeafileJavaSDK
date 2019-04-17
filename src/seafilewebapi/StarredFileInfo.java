@@ -2,7 +2,7 @@ package seafilewebapi;
 
 import java.time.Instant;
 
-import static java.time.temporal.ChronoUnit.MICROS;
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 /**
  * @author freezingrainyu
@@ -20,7 +20,7 @@ public class StarredFileInfo {
 
     public StarredFileInfo(String repo, long mtime, int org, String path, boolean dir, long size) {
         this.repo = repo;
-        this.mtime = Instant.EPOCH.plus(mtime, MICROS);
+        this.mtime = Instant.EPOCH.plus(mtime, SECONDS);
         this.org = org;
         this.path = path;
         this.dir = dir;

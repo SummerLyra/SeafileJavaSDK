@@ -101,7 +101,7 @@ public interface SeafileWebApi {
      * check the info of a specified account
      * TESTED
      *
-     * @param token token of specified account
+     * @param token token of current account
      * @return CheckedAccountInfo object with info in
      */
     CheckedAccountInfo checkAccountInfo(String token);
@@ -116,15 +116,39 @@ public interface SeafileWebApi {
 
     /* module Starred File */
 
+    /**
+     * obtain a list of all starred files
+     * TESTED
+     *
+     * @param token token of current account
+     * @return list of StarredFileInfo objects with info in
+     */
     List<StarredFileInfo> listStarredFiles(String token);
 
-    boolean starFile(String token, String repoId);
+    /** TODO : 500 */
+    boolean starFile(String token, String repoId, String path);
 
-    boolean unStarFile(String token, String repoId);
+    /**
+     * unstar a specified file
+     *
+     * @param token  token of current account
+     * @param repoId library id
+     * @param path   file path
+     * @return unstar successfully or not
+     */
+    boolean unStarFile(String token, String repoId, String path);
 
-    /* Library */
+    /* module Library */
 
-    String getDefaultLibrary(String token);
+    /**
+     * get the info of default library
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param token token of current account
+     * @return GettedDefaultLibraryInfo object with info in
+     */
+    GettedDefaultLibraryInfo getDefaultLibrary(String token);
 
     String createDefaultLibrary(String token);
 

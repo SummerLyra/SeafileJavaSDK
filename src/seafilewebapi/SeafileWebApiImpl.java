@@ -248,21 +248,92 @@ public class SeafileWebApiImpl implements SeafileWebApi {
 
     @Override
     public List<StarredFileInfo> listStarredFiles(String token) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/starredfiles/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseArray(response.body().string(), StarredFileInfo.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
+    /** TODO : 500 */
     @Override
-    public boolean starFile(String token, String repoId) {
+    public boolean starFile(String token, String repoId, String path) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("repo_id", "repoId")
+                .add("p", path)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/starredfiles/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .post(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
-    public boolean unStarFile(String token, String repoId) {
+    public boolean unStarFile(String token, String repoId, String path) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/starredfiles/?repo_id=" + repoId + "&p=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .delete()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
-    public String getDefaultLibrary(String token) {
+    public GettedDefaultLibraryInfo getDefaultLibrary(String token) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/default-repo/")
+                .header("Authorization", "Token " + token)
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseObject(response.body().string(), GettedDefaultLibraryInfo.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

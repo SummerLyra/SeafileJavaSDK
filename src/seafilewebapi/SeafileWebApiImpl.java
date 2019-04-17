@@ -92,7 +92,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public List<AccountInfoToList> listAccounts(String token) {
+    public List<ListedAccountInfo> listAccounts(String token) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/accounts/")
@@ -105,7 +105,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                return JSON.parseArray(response.body().string(), AccountInfoToList.class);
+                return JSON.parseArray(response.body().string(), ListedAccountInfo.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,7 +114,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public AccountInfoToGet getAccountInfo(String token, String username) {
+    public GettedAccountInfo getAccountInfo(String token, String username) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/accounts/" + username + "/")
@@ -127,7 +127,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                return JSON.parseObject(response.body().string(), AccountInfoToGet.class);
+                return JSON.parseObject(response.body().string(), GettedAccountInfo.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -206,7 +206,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public AccountInfoToCheck checkAccountInfo(String token) {
+    public CheckedAccountInfo checkAccountInfo(String token) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/account/info/")
@@ -219,7 +219,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                return JSON.parseObject(response.body().string(), AccountInfoToCheck.class);
+                return JSON.parseObject(response.body().string(), CheckedAccountInfo.class);
             }
         } catch (IOException e) {
             e.printStackTrace();

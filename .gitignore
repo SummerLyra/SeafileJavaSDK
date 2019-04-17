@@ -27,5 +27,6 @@ hs_err_pid*
 *.iml
 *.ipr
 *.iws
+*.kotlin_module
 
 /src/MainClass.java

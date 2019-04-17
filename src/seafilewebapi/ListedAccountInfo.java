@@ -5,11 +5,11 @@ package seafilewebapi;
  * @version 1.0
  * @date 2019/04/17
  */
-public class AccountInfoToList {
+public class ListedAccountInfo {
 
     private String email;
 
-    public AccountInfoToList(String email) {
+    public ListedAccountInfo(String email) {
         this.email = email;
     }
 

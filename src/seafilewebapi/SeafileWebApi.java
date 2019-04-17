@@ -47,9 +47,9 @@ public interface SeafileWebApi {
      * TESTED
      *
      * @param token token of admin
-     * @return list of AccountInfoToList objects with usernames in
+     * @return list of ListedAccountInfo objects with usernames in
      */
-    List<AccountInfoToList> listAccounts(String token);
+    List<ListedAccountInfo> listAccounts(String token);
 
     /**
      * get the info of a specified account
@@ -58,9 +58,9 @@ public interface SeafileWebApi {
      *
      * @param token    token of admin
      * @param username username whose info will be getted
-     * @return AccountInfoToGet object with info in
+     * @return GettedAccountInfo object with info in
      */
-    AccountInfoToGet getAccountInfo(String token, String username);
+    GettedAccountInfo getAccountInfo(String token, String username);
 
     /**
      * create a new account
@@ -102,9 +102,9 @@ public interface SeafileWebApi {
      * TESTED
      *
      * @param token token of specified account
-     * @return AccountInfoToCheck object with info in
+     * @return CheckedAccountInfo object with info in
      */
-    AccountInfoToCheck checkAccountInfo(String token);
+    CheckedAccountInfo checkAccountInfo(String token);
 
     /**
      * get the info of the server

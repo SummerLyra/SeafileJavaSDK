@@ -2,26 +2,26 @@ package seafilewebapi;
 
 /**
  * @author freezingrainnyu
- * @version 1.2
+ * @version 1.3
  * @date 2019/04/17
  */
-public class AccountInfoToCheck {
+public class CheckedAccountInfo {
 
-    private String usage;
-    private String total;
+    private long usage;
+    private long total;
     private String email;
 
-    public AccountInfoToCheck(String usage, String total, String email) {
+    public CheckedAccountInfo(long usage, long total, String email) {
         this.usage = usage;
         this.total = total;
         this.email = email;
     }
 
-    public String getUsage() {
+    public long getUsage() {
         return usage;
     }
 
-    public String getTotal() {
+    public long getTotal() {
         return total;
     }
 

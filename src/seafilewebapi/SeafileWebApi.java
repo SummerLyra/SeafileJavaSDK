@@ -4,19 +4,46 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * @author freezingrainyu
  * @version 1.0
  * @date 2019/04/16
  */
 public interface SeafileWebApi {
 
-    /** Ping */
+    /* Ping */
+
+    /**
+     * ping
+     *
+     * @return "pong"
+     */
     String ping();
 
+    /**
+     * 获取当前用户的 token
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @return 当前用户的 token
+     */
     String obtainAuthToken(String username, String password);
 
+    /**
+     * 使用有效的 token ping
+     *
+     * @param token token
+     * @return "pong"
+     */
     String authPing(String token);
 
-    /** Account */
+    /* Account */
+
+    /**
+     * 获取用户名列表
+     *
+     * @param token token
+     * @return 用户名列表
+     */
     List<String> listAccounts(String token);
 
     AccountInfo getAccountInfo(String token);
@@ -31,18 +58,26 @@ public interface SeafileWebApi {
 
     boolean force2FactorAuth(String token, String username, int force);
 
+    /**
+     * 检查账户信息
+     *
+     * @param token token
+     * @return 账户信息列表 (usage, total, email)
+     */
     AccountInfo checkAccountInfo(String token);
 
     ServerInfo getServerInfo();
 
-    /** Starred File */
+    /* Starred File */
+
     List<StarredFileInfo> listStarredFiles(String token);
 
     boolean starFile(String token, String repoId);
 
     boolean unStarFile(String token, String repoId);
 
-    /** Library */
+    /* Library */
+
     String getDefaultLibrary(String token);
 
     String createDefaultLibrary(String token);
@@ -69,7 +104,8 @@ public interface SeafileWebApi {
 
     List<LibraryInfo> searchLibraries(String token, String keyword);
 
-    /** File */
+    /* File */
+
     ViewInfo viewFile(String token, String repoId, String path);
 
     String downloadFile(String token, String repoId, String path, int reuse);
@@ -104,7 +140,8 @@ public interface SeafileWebApi {
 
     boolean updateFile(String token, String updateLink, String targetFile, File file);
 
-    /** Directory */
+    /* Directory */
+
     List<DirectoryEntry> listDirectoryEntries(String token, String repoId, String path);
 
     boolean createNewDirectory(String token, String repoId, String path);
@@ -115,16 +152,19 @@ public interface SeafileWebApi {
 
     String downloadDirectory(String token, String repoId, String path);
 
-    /** Multiple Files / Directories */
+    /* Multiple Files or Directories */
+
     boolean multiCopy(String token, String path, String dstRepo, String dstDir, String... fileNames);
 
     boolean multiMove(String token, String path, String dstRepo, String dstDir, String... fileNames);
 
     boolean multiDelete(String token, String path, String... fileNames);
 
-    /** Avatar */
+    /* Avatar */
+
     String getUserAvatar(String token, String username, String size);
 
-    /** File Activity */
+    /* File Activity */
+
     List<FileActivity> getFileActivities(String token);
 }

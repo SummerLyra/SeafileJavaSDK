@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * @author freezingrainyu
- * @version 1.1
+ * @version 1.2
  * @date 2019/04/16
  */
 public interface SeafileWebApi {
@@ -130,9 +130,10 @@ public interface SeafileWebApi {
 
     /**
      * unstar a specified file
+     * TESTED
      *
      * @param token  token of current account
-     * @param repoId library id
+     * @param repoId library id which includes the file to be unstarred
      * @param path   file path
      * @return unstar successfully or not
      */
@@ -142,19 +143,40 @@ public interface SeafileWebApi {
 
     /**
      * get the info of default library
-     * ADMIN ONLY
      * TESTED
      *
      * @param token token of current account
-     * @return GettedDefaultLibraryInfo object with info in
+     * @return DefaultLibraryInfo object with info in
      */
-    GettedDefaultLibraryInfo getDefaultLibrary(String token);
+    DefaultLibraryInfo getDefaultLibrary(String token);
 
-    String createDefaultLibrary(String token);
+    /**
+     * create a default library
+     * TESTED
+     *
+     * @param token token of current account
+     * @return DefaultLibraryInfo object with info in
+     */
+    DefaultLibraryInfo createDefaultLibrary(String token);
 
-    List<LibraryInfo> listLibraries(String token);
+    /**
+     * obtain a list of all libraries
+     * TESTED
+     *
+     * @param token token of current account
+     * @return list of ListedLibraryInfo objects with info in
+     */
+    List<ListedLibraryInfo> listLibraries(String token);
 
-    LibraryInfo getLibraryInfo(String token, String repoId);
+    /**
+     * get the info of a specified library
+     * TESTED
+     *
+     * @param token  token of current account
+     * @param repoId library id whose info will be getted
+     * @return GettedLibraryInfo object with info in
+     */
+    GettedLibraryInfo getLibraryInfo(String token, String repoId);
 
     String getLibraryOwner(String token, String repoId);
 

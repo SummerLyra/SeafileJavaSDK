@@ -5,12 +5,12 @@ package seafilewebapi;
  * @version 1.0
  * @date 2019/04/17
  */
-public class GettedDefaultLibraryInfo {
+public class DefaultLibraryInfo {
 
     private String repoId;
     private boolean exists;
 
-    public GettedDefaultLibraryInfo(String repoId, boolean exists) {
+    public DefaultLibraryInfo(String repoId, boolean exists) {
         this.repoId = repoId;
         this.exists = exists;
     }

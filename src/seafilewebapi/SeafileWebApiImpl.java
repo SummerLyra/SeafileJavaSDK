@@ -15,7 +15,7 @@ import okhttp3.Response;
 
 /**
  * @author freezingrainyu
- * @version 1.1
+ * @version 1.2
  * @date 2019/04/16
  */
 public class SeafileWebApiImpl implements SeafileWebApi {
@@ -318,7 +318,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public GettedDefaultLibraryInfo getDefaultLibrary(String token) {
+    public DefaultLibraryInfo getDefaultLibrary(String token) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/default-repo/")
@@ -329,7 +329,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                return JSON.parseObject(response.body().string(), GettedDefaultLibraryInfo.class);
+                return JSON.parseObject(response.body().string(), DefaultLibraryInfo.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -338,17 +338,68 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public String createDefaultLibrary(String token) {
+    public DefaultLibraryInfo createDefaultLibrary(String token) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/default-repo/")
+                .header("Authorization", "Token " + token)
+                .post(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseObject(response.body().string(), DefaultLibraryInfo.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public List<LibraryInfo> listLibraries(String token) {
+    public List<ListedLibraryInfo> listLibraries(String token) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseArray(response.body().string(), ListedLibraryInfo.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public LibraryInfo getLibraryInfo(String token, String repoId) {
+    public GettedLibraryInfo getLibraryInfo(String token, String repoId) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseObject(response.body().string(), GettedLibraryInfo.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

@@ -1,12 +1,10 @@
 package seafilewebapi;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.FormBody;
@@ -17,7 +15,7 @@ import okhttp3.Response;
 
 /**
  * @author freezingrainyu
- * @version 1.0
+ * @version 1.1
  * @date 2019/04/16
  */
 public class SeafileWebApiImpl implements SeafileWebApi {
@@ -94,24 +92,20 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public List<String> listAccounts(String token) {
+    public List<AccountInfoToList> listAccounts(String token) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/accounts/")
                 .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
                 .get()
                 .build();
         try {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                List<String> listedAccounts = new ArrayList<>();
-                JSONArray jsonArray = JSON.parseArray(response.body().string());
-                for (Object object : jsonArray) {
-                    JSONObject jsonObject = (JSONObject) object;
-                    listedAccounts.add(jsonObject.getString("email"));
-                }
-                return listedAccounts;
+                return JSON.parseArray(response.body().string(), AccountInfoToList.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -120,37 +114,99 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public AccountInfo getAccountInfo(String token) {
+    public AccountInfoToGet getAccountInfo(String token, String username) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/accounts/" + username + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseObject(response.body().string(), AccountInfoToGet.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public boolean createAccount(String token, String username, String password) {
-        return false;
-    }
-
-    @Override
-    public boolean updateAccount(String token) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("password", password)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/accounts/" + username + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .put(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
     public boolean migrateAccount(String token, String fromUser, String toUser) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("op", "migrate")
+                .add("to_user", toUser)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/accounts/" + fromUser + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .post(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
     public boolean deleteAccount(String token, String username) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/accounts/" + username + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .delete()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
-    public boolean force2FactorAuth(String token, String username, int force) {
-        return false;
-    }
-
-    @Override
-    public AccountInfo checkAccountInfo(String token) {
+    public AccountInfoToCheck checkAccountInfo(String token) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/account/info/")
@@ -163,11 +219,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                JSONObject jsonObject = JSON.parseObject(response.body().string());
-                String usage = jsonObject.getString("usage");
-                String total = jsonObject.getString("total");
-                String email = jsonObject.getString("email");
-                return new AccountInfo(usage, total, email);
+                return JSON.parseObject(response.body().string(), AccountInfoToCheck.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -177,6 +229,20 @@ public class SeafileWebApiImpl implements SeafileWebApi {
 
     @Override
     public ServerInfo getServerInfo() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/server-info/")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseObject(response.body().string(), ServerInfo.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

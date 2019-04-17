@@ -5,70 +5,116 @@ import java.util.List;
 
 /**
  * @author freezingrainyu
- * @version 1.0
+ * @version 1.1
  * @date 2019/04/16
  */
 public interface SeafileWebApi {
 
-    /* Ping */
+    /* module Ping */
 
     /**
      * ping
+     * TESTED
      *
      * @return "pong"
      */
     String ping();
 
     /**
-     * 获取当前用户的 token
+     * obtain the token of a specified account
+     * TESTED
      *
-     * @param username 用户名
-     * @param password 密码
-     * @return 当前用户的 token
+     * @param username username whose token will be obtained
+     * @param password password
+     * @return token of specified user
      */
     String obtainAuthToken(String username, String password);
 
     /**
-     * 使用有效的 token ping
+     * ping with a valid token
+     * TESTED
      *
      * @param token token
      * @return "pong"
      */
     String authPing(String token);
 
-    /* Account */
+    /* module Account */
 
     /**
-     * 获取用户名列表
+     * obtain a list of all usernames
+     * ADMIN ONLY
+     * TESTED
      *
-     * @param token token
-     * @return 用户名列表
+     * @param token token of admin
+     * @return list of AccountInfoToList objects with usernames in
      */
-    List<String> listAccounts(String token);
+    List<AccountInfoToList> listAccounts(String token);
 
-    AccountInfo getAccountInfo(String token);
+    /**
+     * get the info of a specified account
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param token    token of admin
+     * @param username username whose info will be getted
+     * @return AccountInfoToGet object with info in
+     */
+    AccountInfoToGet getAccountInfo(String token, String username);
 
+    /**
+     * create a new account
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param token    token of admin
+     * @param username username of new account
+     * @param password password of new account
+     * @return create successfully or not
+     */
     boolean createAccount(String token, String username, String password);
 
-    boolean updateAccount(String token);
-
+    /**
+     * migrate all libraries of one account to another one
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param token    token of admin
+     * @param fromUser username whose libraries will be migrated
+     * @param toUser   username of account where libraries will be placed
+     * @return migrate successfully or not
+     */
     boolean migrateAccount(String token, String fromUser, String toUser);
 
+    /**
+     * delete an existed account
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param token    token of admin
+     * @param username username whose account will be deleted
+     * @return delete successfully or not
+     */
     boolean deleteAccount(String token, String username);
 
-    boolean force2FactorAuth(String token, String username, int force);
+    /**
+     * check the info of a specified account
+     * TESTED
+     *
+     * @param token token of specified account
+     * @return AccountInfoToCheck object with info in
+     */
+    AccountInfoToCheck checkAccountInfo(String token);
 
     /**
-     * 检查账户信息
+     * get the info of the server
+     * TESTED
      *
-     * @param token token
-     * @return 账户信息列表 (usage, total, email)
+     * @return ServerInfo object with info in
      */
-    AccountInfo checkAccountInfo(String token);
-
     ServerInfo getServerInfo();
 
-    /* Starred File */
+    /* module Starred File */
 
     List<StarredFileInfo> listStarredFiles(String token);
 
@@ -104,7 +150,7 @@ public interface SeafileWebApi {
 
     List<LibraryInfo> searchLibraries(String token, String keyword);
 
-    /* File */
+    /* module File */
 
     ViewInfo viewFile(String token, String repoId, String path);
 
@@ -140,7 +186,7 @@ public interface SeafileWebApi {
 
     boolean updateFile(String token, String updateLink, String targetFile, File file);
 
-    /* Directory */
+    /* module Directory */
 
     List<DirectoryEntry> listDirectoryEntries(String token, String repoId, String path);
 
@@ -152,7 +198,7 @@ public interface SeafileWebApi {
 
     String downloadDirectory(String token, String repoId, String path);
 
-    /* Multiple Files or Directories */
+    /* module Multiple Files or Directories */
 
     boolean multiCopy(String token, String path, String dstRepo, String dstDir, String... fileNames);
 
@@ -160,11 +206,11 @@ public interface SeafileWebApi {
 
     boolean multiDelete(String token, String path, String... fileNames);
 
-    /* Avatar */
+    /* module Avatar */
 
     String getUserAvatar(String token, String username, String size);
 
-    /* File Activity */
+    /* module File Activity */
 
     List<FileActivity> getFileActivities(String token);
 }

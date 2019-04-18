@@ -6,10 +6,10 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 /**
  * @author freezingrainyu
- * @version 1.0
+ * @version 1.1
  * @date 2019/04/17
  */
-public class LibraryInfo {
+abstract class AbstractLibraryInfoGetOrList {
 
     private boolean encrypted;
     private Instant mtime;
@@ -21,7 +21,7 @@ public class LibraryInfo {
     private String desc;
     private String root;
 
-    public LibraryInfo(boolean encrypted, long mtime, String owner, String id, long size, String name, String type, String desc, String root) {
+    public AbstractLibraryInfoGetOrList(boolean encrypted, long mtime, String owner, String id, long size, String name, String type, String desc, String root) {
         this.encrypted = encrypted;
         this.mtime = Instant.EPOCH.plus(mtime, SECONDS);
         this.owner = owner;

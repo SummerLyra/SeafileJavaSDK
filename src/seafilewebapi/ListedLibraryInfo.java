@@ -2,10 +2,10 @@ package seafilewebapi;
 
 /**
  * @author freezingrainyu
- * @version 1.0
+ * @version 1.1
  * @date 2019/04/18
  */
-public class ListedLibraryInfo extends LibraryInfo {
+public class ListedLibraryInfo extends AbstractLibraryInfoGetOrList {
 
     private String permission;
     private boolean virtual;

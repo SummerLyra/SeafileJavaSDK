@@ -25,7 +25,7 @@ public interface SeafileWebApi {
      * TESTED
      *
      * @param username username whose token will be obtained
-     * @param password password
+     * @param password password of the account
      * @return token of specified user
      */
     String obtainAuthToken(String username, String password);
@@ -178,23 +178,88 @@ public interface SeafileWebApi {
      */
     GettedLibraryInfo getLibraryInfo(String token, String repoId);
 
+    /**
+     * get owner username of a specified library
+     * TESTED
+     *
+     * @param token  token of current account
+     * @param repoId library id whose owner username will be getted
+     * @return owner username of specified library
+     */
     String getLibraryOwner(String token, String repoId);
 
-    List<LibraryHistory> getLibraryHistory(String token, String repoId);
+    /**
+     * get the commit history of a specified library
+     * TESTED
+     *
+     * @param token  token of current account
+     * @param repoId library id whose commit history will be getted
+     * @return commit history of specified library
+     */
+    LibraryHistory getLibraryHistory(String token, String repoId);
 
-    LibraryInfo createLibrary(String token, String name, String desc, String password);
+    /**
+     * create a new library
+     * TESTED
+     *
+     * @param token token of current account
+     * @param name  name of new library
+     * @return CreatedLibraryInfo object with info in
+     */
+    CreatedLibraryInfo createLibrary(String token, String name);
 
+    /**
+     * create a new encrypted library
+     * TESTED
+     *
+     * @param token    token of current account
+     * @param name     name of new library
+     * @param password password of new library
+     * @return CreatedLibraryInfo object with info in
+     */
+    CreatedLibraryInfo createEncryptedLibrary(String token, String name, String password);
+
+
+    /**
+     * delete an existed library
+     * TESTED
+     *
+     * @param token  token of current account
+     * @param repoId library id which will be deleted
+     * @return delete successfully or not
+     */
     boolean deleteLibrary(String token, String repoId);
 
+    /**
+     * rename an existed library
+     * TESTED
+     *
+     * @param token   token of current account
+     * @param repoId  library id which will be renamed
+     * @param newName new name of the library
+     * @return rename successfully or not
+     */
     boolean renameLibrary(String token, String repoId, String newName);
 
-    boolean createPublicLibrary(String token, String repoId);
+    /**
+     * decrypt an encrypted library
+     * TESTED
+     *
+     * @param token    token of current account
+     * @param repoId   library id which will be decrypted
+     * @param password password of the library
+     * @return decrypt successfully or not
+     */
+    boolean decryptLibrary(String token, String repoId, String password);
 
-    boolean removePublicLibrary(String token, String repoId);
-
-    LibraryDownloadInfo fetchLibraryDownloadInfo(String token, String repoId);
-
-    List<LibraryInfo> searchLibraries(String token, String keyword);
+    /**
+     * fetch download info of a specified library
+     *
+     * @param token  token of current user
+     * @param repoId library id whose download info will be fetched
+     * @return FetchedLibraryDownloadInfo object with info in
+     */
+    FetchedLibraryDownloadInfo fetchLibraryDownloadInfo(String token, String repoId);
 
     /* module File */
 

@@ -1,16 +1,10 @@
 package seafilewebapi;
 
-import seafilewebapi.accountobjects.CheckedAccountInfo;
-import seafilewebapi.accountobjects.GettedAccountInfo;
-import seafilewebapi.accountobjects.ListedAccountInfo;
-import seafilewebapi.accountobjects.ServerInfo;
-import seafilewebapi.directoryobjects.DirectoryEntry;
-import seafilewebapi.fileobjects.FileActivity;
-import seafilewebapi.fileobjects.FileHistory;
-import seafilewebapi.fileobjects.FileDetail;
-import seafilewebapi.fileobjects.ViewInfo;
+import seafilewebapi.accountobjects.*;
+import seafilewebapi.directoryobjects.*;
+import seafilewebapi.fileobjects.*;
 import seafilewebapi.libraryobjects.*;
-import seafilewebapi.starredfileobjects.StarredFileInfo;
+import seafilewebapi.starredfileobjects.*;
 
 import java.io.File;
 import java.util.List;

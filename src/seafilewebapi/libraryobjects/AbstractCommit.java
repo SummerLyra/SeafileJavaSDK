@@ -1,4 +1,4 @@
-package seafilewebapi;
+package seafilewebapi.libraryobjects;
 
 import java.time.Instant;
 

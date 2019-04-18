@@ -1,7 +1,5 @@
 package seafilewebapi.libraryobjects;
 
-import seafilewebapi.AbstractCommit;
-
 /**
  * @author freezingrainyu
  * @version 1.0

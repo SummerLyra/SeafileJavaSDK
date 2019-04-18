@@ -14,10 +14,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import seafilewebapi.accountobjects.*;
 import seafilewebapi.directoryobjects.DirectoryEntry;
-import seafilewebapi.fileobjects.FileActivity;
-import seafilewebapi.fileobjects.FileHistory;
-import seafilewebapi.fileobjects.FileDetail;
-import seafilewebapi.fileobjects.ViewInfo;
+import seafilewebapi.fileobjects.*;
 import seafilewebapi.libraryobjects.*;
 import seafilewebapi.starredfileobjects.*;
 
@@ -667,7 +664,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public FileHistory getFileHistory(String token, String repoId, String path) {
+    public List<FileHistory> getFileHistory(String token, String repoId, String path) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/history/?p=" + path)
@@ -681,7 +678,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                return JSON.parseObject(response.body().string(), FileHistory.class);
+                return JSON.parseArray(JSON.parseObject(response.body().string()).getString("commits"), FileHistory.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -765,26 +762,130 @@ public class SeafileWebApiImpl implements SeafileWebApi {
 
     @Override
     public boolean lockFile(String token, String repoId, String path) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("operation", "lock")
+                .add("p", path)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .put(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
     public boolean unLockFile(String token, String repoId, String path) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("operation", "unlock")
+                .add("p", path)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .put(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
     public boolean moveFile(String token, String repoId, String path, String dstRepo, String dstDir) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("operation", "move")
+                .add("dst_repo", dstRepo)
+                .add("dst_dir", dstDir)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .post(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
-    public boolean copyFile(String token, String repoId, String path, String dstRepo, String dstDir) {
+    public boolean copyFile(String token, String repoId, String path, String filename, String dstRepo, String dstDir) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("operation", "copy")
+                .add("dst_repo", dstRepo)
+                .add("dst_dir", dstDir)
+                .add("file_names", filename)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .post(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
     public boolean revertFile(String token, String repoId, String path, String commitId) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("commit_id", commitId)
+                .add("p", path)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/revert/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .put(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 

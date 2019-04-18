@@ -149,7 +149,7 @@ public interface SeafileWebApi {
     boolean starFile(String token, String repoId, String path);
 
     /**
-     * unstar a specified file
+     * unstar a starred file
      * TESTED
      *
      * @param token  token of current account
@@ -284,8 +284,9 @@ public interface SeafileWebApi {
     /* module File */
 
     /**
-     * fetch a view link of a specified file
+     * fetch a Office Web Apps (OWA) view link of a specified Microsoft Office file
      * TO BE TESTED
+     * PRO EDITION ONLY
      *
      * @param token  token of current user
      * @param repoId library id where the file will be viewed in
@@ -322,10 +323,10 @@ public interface SeafileWebApi {
      *
      * @param token  token of current user
      * @param repoId library id where the file whose commit history will be getted in
-     * @param path   file path wose commit history will be getted
-     * @return FileHistory object with commit history in
+     * @param path   file path whose commit history will be getted
+     * @return list of FileHistory objects with commit history in
      */
-    FileHistory getFileHistory(String token, String repoId, String path);
+    List<FileHistory> getFileHistory(String token, String repoId, String path);
 
     /**
      * fetch a download link of a specified file from a revision
@@ -345,7 +346,7 @@ public interface SeafileWebApi {
      *
      * @param token  token of current account
      * @param repoId library id where the new file will be placed in
-     * @param path   filename of the new file
+     * @param path   path and filename of the new file
      * @return create successfully or not
      */
     boolean createFile(String token, String repoId, String path);
@@ -362,14 +363,67 @@ public interface SeafileWebApi {
      */
     boolean renameFile(String token, String repoId, String path, String newname);
 
+    /**
+     * lock a specified file
+     * TO BE TESTED
+     * PRO EDITION ONLY
+     *
+     * @param token  token of current account
+     * @param repoId library id where the file will be locked in
+     * @param path   file path which will be locked
+     * @return lock successfully or not
+     */
     boolean lockFile(String token, String repoId, String path);
 
+    /**
+     * unlock a locked file
+     * TO BE TESTED
+     * PRO EDITION ONLY
+     *
+     * @param token  token of current account
+     * @param repoId library id where the file will be unlocked in
+     * @param path   file path which will be unlocked
+     * @return unlock successfully or not
+     */
     boolean unLockFile(String token, String repoId, String path);
 
+    /**
+     * move a specified file
+     * TESTED
+     *
+     * @param token   token of current account
+     * @param repoId  library id where the file will be move in
+     * @param path    file path which will be moved
+     * @param dstRepo library id where the file will be moved to
+     * @param dstDir  file path where will be moved to
+     * @return move successfully or not
+     */
     boolean moveFile(String token, String repoId, String path, String dstRepo, String dstDir);
 
-    boolean copyFile(String token, String repoId, String path, String dstRepo, String dstDir);
+    /**
+     * copy a specified file
+     * TESTED
+     *
+     * @param token    token of current account
+     * @param repoId   library id where the file will be copied in
+     * @param path     file path which will be copied
+     * @param filename filename which will be copied
+     * @param dstRepo  library id where the file will be copied to
+     * @param dstDir   file path where will be copied to
+     * @return copy successfully or not
+     */
+    boolean copyFile(String token, String repoId, String path, String filename, String dstRepo, String dstDir);
 
+    /**
+     * revert a specified file
+     * TESTED
+     *
+     * @param token    token of current account
+     * @param repoId   library id where the file will be reverted in
+     * @param path     file path which will be reverted
+     * @param commitId commit id of the revision
+     * @return revert successfully or not
+     */
     boolean revertFile(String token, String repoId, String path, String commitId);
 
     boolean deleteFile(String token, String repoId, String path);

@@ -1,4 +1,4 @@
-package seafilewebapi;
+package seafilewebapi.starredfileobjects;
 
 import java.time.Instant;
 

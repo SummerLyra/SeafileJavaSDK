@@ -1,4 +1,4 @@
-package seafilewebapi;
+package seafilewebapi.accountobjects;
 
 /**
  * @author freezingrainnyu

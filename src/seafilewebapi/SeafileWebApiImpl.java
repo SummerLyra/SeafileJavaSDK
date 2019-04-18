@@ -12,6 +12,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import seafilewebapi.accountobjects.*;
+import seafilewebapi.directoryobjects.DirectoryEntry;
+import seafilewebapi.fileobjects.FileActivity;
+import seafilewebapi.fileobjects.FileHistory;
+import seafilewebapi.fileobjects.FileInfo;
+import seafilewebapi.fileobjects.ViewInfo;
+import seafilewebapi.libraryobjects.*;
+import seafilewebapi.starredfileobjects.*;
 
 /**
  * @author freezingrainyu

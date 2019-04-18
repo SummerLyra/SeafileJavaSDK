@@ -16,7 +16,7 @@ import seafilewebapi.accountobjects.*;
 import seafilewebapi.directoryobjects.DirectoryEntry;
 import seafilewebapi.fileobjects.FileActivity;
 import seafilewebapi.fileobjects.FileHistory;
-import seafilewebapi.fileobjects.FileInfo;
+import seafilewebapi.fileobjects.FileDetail;
 import seafilewebapi.fileobjects.ViewInfo;
 import seafilewebapi.libraryobjects.*;
 import seafilewebapi.starredfileobjects.*;
@@ -276,12 +276,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
         return null;
     }
 
-    /** TODO : 500 */
     @Override
     public boolean starFile(String token, String repoId, String path) {
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = new FormBody.Builder()
-                .add("repo_id", "repoId")
+                .add("repo_id", repoId)
                 .add("p", path)
                 .build();
         Request request = new Request.Builder()
@@ -529,10 +528,10 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean renameLibrary(String token, String repoId, String newName) {
+    public boolean renameLibrary(String token, String repoId, String newname) {
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = new FormBody.Builder()
-                .add("repo_name", newName)
+                .add("repo_name", newname)
                 .build();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/?op=rename")
@@ -600,36 +599,167 @@ public class SeafileWebApiImpl implements SeafileWebApi {
 
     @Override
     public ViewInfo viewFile(String token, String repoId, String path) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/owa-file/?path=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseObject(response.body().string(), ViewInfo.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public String downloadFile(String token, String repoId, String path, int reuse) {
+    public String downloadFile(String token, String repoId, String path) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/?p=" + path + "&reuse=1")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return response.body().string();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public FileInfo getFileDetail(String token, String repoId, String path) {
+    public FileDetail getFileDetail(String token, String repoId, String path) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/detail/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseObject(response.body().string(), FileDetail.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public List<FileHistory> getFileHistory(String token, String repoId, String path) {
+    public FileHistory getFileHistory(String token, String repoId, String path) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/history/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseObject(response.body().string(), FileHistory.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public String downloadFileFromRevision(String token, String repoId, String path, String commitId) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/revision/?p=" + path + "&commit_id=" + commitId)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return response.body().string();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public boolean createFile(String token, String repoId, String path) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("operation", "create")
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .post(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
-    public boolean renameFile(String token, String repoId, String path, String newName) {
+    public boolean renameFile(String token, String repoId, String path, String newname) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("operation", "rename")
+                .add("newname", newname)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .post(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -694,7 +824,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean renameDirectory(String token, String repoId, String path, String newName) {
+    public boolean renameDirectory(String token, String repoId, String path, String newname) {
         return false;
     }
 

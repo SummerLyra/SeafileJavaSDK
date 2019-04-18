@@ -1,4 +1,4 @@
-package seafilewebapi.libraryobjects;
+package seafilewebapi;
 
 import java.time.Instant;
 
@@ -6,10 +6,10 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 /**
  * @author freezingrainyu
- * @version 1.0
+ * @version 1.1
  * @date 2019/04/18
  */
-public class Commit {
+public abstract class AbstractCommit {
 
     private long revFileSize;
     private String revFileId;
@@ -26,7 +26,7 @@ public class Commit {
     private boolean conflict;
     private String secondParentId;
 
-    public Commit(long revFileSize, String revFileId, long ctime, String creatorName, String creator, String rootId, String revRenamedOldPath, String parentId, boolean newMerge, String repoId, String desc, String id, boolean conflict, String secondParentId) {
+    public AbstractCommit(long revFileSize, String revFileId, long ctime, String creatorName, String creator, String rootId, String revRenamedOldPath, String parentId, boolean newMerge, String repoId, String desc, String id, boolean conflict, String secondParentId) {
         this.revFileSize = revFileSize;
         this.revFileId = revFileId;
         this.ctime = Instant.EPOCH.plus(ctime, SECONDS);

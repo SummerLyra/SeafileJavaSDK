@@ -7,7 +7,7 @@ import seafilewebapi.accountobjects.ServerInfo;
 import seafilewebapi.directoryobjects.DirectoryEntry;
 import seafilewebapi.fileobjects.FileActivity;
 import seafilewebapi.fileobjects.FileHistory;
-import seafilewebapi.fileobjects.FileInfo;
+import seafilewebapi.fileobjects.FileDetail;
 import seafilewebapi.fileobjects.ViewInfo;
 import seafilewebapi.libraryobjects.*;
 import seafilewebapi.starredfileobjects.StarredFileInfo;
@@ -137,7 +137,15 @@ public interface SeafileWebApi {
      */
     List<StarredFileInfo> listStarredFiles(String token);
 
-    /** TODO : 500 */
+    /**
+     * star a specified file
+     * TESTED
+     *
+     * @param token  token of current account
+     * @param repoId library id which includes the file to be starred
+     * @param path   file path
+     * @return star successfully or not
+     */
     boolean starFile(String token, String repoId, String path);
 
     /**
@@ -196,7 +204,7 @@ public interface SeafileWebApi {
      *
      * @param token  token of current account
      * @param repoId library id whose owner username will be getted
-     * @return owner username of specified library
+     * @return owner username of library
      */
     String getLibraryOwner(String token, String repoId);
 
@@ -206,7 +214,7 @@ public interface SeafileWebApi {
      *
      * @param token  token of current account
      * @param repoId library id whose commit history will be getted
-     * @return commit history of specified library
+     * @return LibraryHistory object with commit history in
      */
     LibraryHistory getLibraryHistory(String token, String repoId);
 
@@ -231,7 +239,6 @@ public interface SeafileWebApi {
      */
     CreatedLibraryInfo createEncryptedLibrary(String token, String name, String password);
 
-
     /**
      * delete an existed library
      * TESTED
@@ -248,10 +255,10 @@ public interface SeafileWebApi {
      *
      * @param token   token of current account
      * @param repoId  library id which will be renamed
-     * @param newName new name of the library
+     * @param newname new name of the library
      * @return rename successfully or not
      */
-    boolean renameLibrary(String token, String repoId, String newName);
+    boolean renameLibrary(String token, String repoId, String newname);
 
     /**
      * decrypt an encrypted library
@@ -266,6 +273,7 @@ public interface SeafileWebApi {
 
     /**
      * fetch download info of a specified library
+     * TESTED
      *
      * @param token  token of current user
      * @param repoId library id whose download info will be fetched
@@ -275,19 +283,84 @@ public interface SeafileWebApi {
 
     /* module File */
 
+    /**
+     * fetch a view link of a specified file
+     * TO BE TESTED
+     *
+     * @param token  token of current user
+     * @param repoId library id where the file will be viewed in
+     * @param path   file path which will be viewed
+     * @return ViewInfo object with info in
+     */
     ViewInfo viewFile(String token, String repoId, String path);
 
-    String downloadFile(String token, String repoId, String path, int reuse);
+    /**
+     * fetch a download link of a specified file
+     * TESTED
+     *
+     * @param token  token of current user
+     * @param repoId library id where the file will be downloaded in
+     * @param path   file path which will be downloaded
+     * @return download link of file
+     */
+    String downloadFile(String token, String repoId, String path);
 
-    FileInfo getFileDetail(String token, String repoId, String path);
+    /**
+     * get the detail of a specified file
+     * TESTED
+     *
+     * @param token  token of current user
+     * @param repoId library id where the file whose details will be getted in
+     * @param path   file path whose details will be getted
+     * @return FileDetail object with details in
+     */
+    FileDetail getFileDetail(String token, String repoId, String path);
 
-    List<FileHistory> getFileHistory(String token, String repoId, String path);
+    /**
+     * get the commit history of a specified file
+     * TESTED
+     *
+     * @param token  token of current user
+     * @param repoId library id where the file whose commit history will be getted in
+     * @param path   file path wose commit history will be getted
+     * @return FileHistory object with commit history in
+     */
+    FileHistory getFileHistory(String token, String repoId, String path);
 
+    /**
+     * fetch a download link of a specified file from a revision
+     * TESTED
+     *
+     * @param token    token of current user
+     * @param repoId   library id where the file will be downloaded in
+     * @param path     file path which will be downloaded
+     * @param commitId commit id of the revision
+     * @return download link of file
+     */
     String downloadFileFromRevision(String token, String repoId, String path, String commitId);
 
+    /**
+     * create a new file
+     * TESTED
+     *
+     * @param token  token of current account
+     * @param repoId library id where the new file will be placed in
+     * @param path   filename of the new file
+     * @return create successfully or not
+     */
     boolean createFile(String token, String repoId, String path);
 
-    boolean renameFile(String token, String repoId, String path, String newName);
+    /**
+     * rename an existed file
+     * TESTED
+     *
+     * @param token   token of current account
+     * @param repoId  library id where the file will be renamed in
+     * @param path    file path which will be renamed
+     * @param newname new name of the file
+     * @return rename successfully or not
+     */
+    boolean renameFile(String token, String repoId, String path, String newname);
 
     boolean lockFile(String token, String repoId, String path);
 
@@ -315,7 +388,7 @@ public interface SeafileWebApi {
 
     boolean createNewDirectory(String token, String repoId, String path);
 
-    boolean renameDirectory(String token, String repoId, String path, String newName);
+    boolean renameDirectory(String token, String repoId, String path, String newname);
 
     boolean deleteDirectory(String token, String repoId, String path);
 

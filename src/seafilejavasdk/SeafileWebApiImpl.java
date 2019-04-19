@@ -1,4 +1,4 @@
-package seafilewebapi;
+package seafilejavasdk;
 
 import com.alibaba.fastjson.JSON;
 
@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.util.List;
 
 import okhttp3.*;
-import seafilewebapi.accountobjects.*;
-import seafilewebapi.avatarobjects.*;
-import seafilewebapi.directoryobjects.*;
-import seafilewebapi.fileobjects.*;
-import seafilewebapi.libraryobjects.*;
-import seafilewebapi.starredfileobjects.*;
+import seafilejavasdk.accountobjects.*;
+import seafilejavasdk.avatarobjects.*;
+import seafilejavasdk.directoryobjects.*;
+import seafilejavasdk.fileobjects.*;
+import seafilejavasdk.libraryobjects.*;
+import seafilejavasdk.starredfileobjects.*;
 
 /**
  * @author freezingrainyu

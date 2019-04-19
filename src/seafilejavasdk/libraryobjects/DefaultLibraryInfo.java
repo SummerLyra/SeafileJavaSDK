@@ -1,4 +1,4 @@
-package seafilewebapi.libraryobjects;
+package seafilejavasdk.libraryobjects;
 
 /**
  * @author freezingrainyu

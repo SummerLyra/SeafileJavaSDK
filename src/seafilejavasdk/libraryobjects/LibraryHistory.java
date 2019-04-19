@@ -1,4 +1,4 @@
-package seafilewebapi.fileobjects;
+package seafilejavasdk.libraryobjects;
 
 import java.time.Instant;
 
@@ -9,10 +9,10 @@ import static java.time.temporal.ChronoUnit.SECONDS;
  * @version 1.5
  * @date 2019/04/18
  */
-public class FileHistory {
+public class LibraryHistory {
 
     private long revFileSize;
-    private String repoId;
+    private String revFileId;
     private String ctime;
     private String creatorName;
     private String creator;
@@ -20,16 +20,15 @@ public class FileHistory {
     private String revRenamedOldPath;
     private String parentId;
     private boolean newMerge;
-    private int version;
-    private boolean conflict;
+    private String repoId;
     private String desc;
     private String id;
-    private String revFileId;
+    private boolean conflict;
     private String secondParentId;
 
-    public FileHistory(long revFileSize, String repoId, long ctime, String creatorName, String creator, String rootId, String revRenamedOldPath, String parentId, boolean newMerge, int version, boolean conflict, String desc, String id, String revFileId, String secondParentId) {
+    public LibraryHistory(long revFileSize, String revFileId, long ctime, String creatorName, String creator, String rootId, String revRenamedOldPath, String parentId, boolean newMerge, String repoId, String desc, String id, boolean conflict, String secondParentId) {
         this.revFileSize = revFileSize;
-        this.repoId = repoId;
+        this.revFileId = revFileId;
         this.ctime = Instant.EPOCH.plus(ctime, SECONDS).toString();
         this.creatorName = creatorName;
         this.creator = creator;
@@ -37,11 +36,10 @@ public class FileHistory {
         this.revRenamedOldPath = revRenamedOldPath;
         this.parentId = parentId;
         this.newMerge = newMerge;
-        this.version = version;
-        this.conflict = conflict;
+        this.repoId = repoId;
         this.desc = desc;
         this.id = id;
-        this.revFileId = revFileId;
+        this.conflict = conflict;
         this.secondParentId = secondParentId;
     }
 
@@ -49,8 +47,8 @@ public class FileHistory {
         return revFileSize;
     }
 
-    public String getRepoId() {
-        return repoId;
+    public String getRevFileId() {
+        return revFileId;
     }
 
     public String getCtime() {
@@ -81,12 +79,8 @@ public class FileHistory {
         return newMerge;
     }
 
-    public int getVersion() {
-        return version;
-    }
-
-    public boolean isConflict() {
-        return conflict;
+    public String getRepoId() {
+        return repoId;
     }
 
     public String getDesc() {
@@ -97,8 +91,8 @@ public class FileHistory {
         return id;
     }
 
-    public String getRevFileId() {
-        return revFileId;
+    public boolean isConflict() {
+        return conflict;
     }
 
     public String getSecondParentId() {

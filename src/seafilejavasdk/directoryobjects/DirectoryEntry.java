@@ -1,25 +1,19 @@
-package seafilewebapi.fileobjects;
-
-import java.time.Instant;
-
-import static java.time.temporal.ChronoUnit.SECONDS;
+package seafilejavasdk.directoryobjects;
 
 /**
  * @author freezingrainnyu
  * @version 1.5
- * @date 2019/04/18
+ * @date 2019/04/19
  */
-public class FileDetail {
+public class DirectoryEntry {
 
     private String id;
-    private String mtime;
     private String type;
     private String name;
     private long size;
 
-    public FileDetail(String id, long mtime, String type, String name, long size) {
+    public DirectoryEntry(String id, String type, String name, long size) {
         this.id = id;
-        this.mtime = Instant.EPOCH.plus(mtime, SECONDS).toString();
         this.type = type;
         this.name = name;
         this.size = size;
@@ -27,10 +21,6 @@ public class FileDetail {
 
     public String getId() {
         return id;
-    }
-
-    public String getMtime() {
-        return mtime;
     }
 
     public String getType() {

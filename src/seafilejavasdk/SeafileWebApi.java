@@ -1,12 +1,12 @@
-package seafilewebapi;
+package seafilejavasdk;
 
 import okhttp3.OkHttpClient;
-import seafilewebapi.accountobjects.*;
-import seafilewebapi.avatarobjects.*;
-import seafilewebapi.directoryobjects.*;
-import seafilewebapi.fileobjects.*;
-import seafilewebapi.libraryobjects.*;
-import seafilewebapi.starredfileobjects.*;
+import seafilejavasdk.accountobjects.*;
+import seafilejavasdk.avatarobjects.*;
+import seafilejavasdk.directoryobjects.*;
+import seafilejavasdk.fileobjects.*;
+import seafilejavasdk.libraryobjects.*;
+import seafilejavasdk.starredfileobjects.*;
 
 import java.io.File;
 import java.util.List;

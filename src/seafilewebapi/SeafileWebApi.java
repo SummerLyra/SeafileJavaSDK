@@ -2,6 +2,7 @@ package seafilewebapi;
 
 import okhttp3.OkHttpClient;
 import seafilewebapi.accountobjects.*;
+import seafilewebapi.avatarobjects.*;
 import seafilewebapi.directoryobjects.*;
 import seafilewebapi.fileobjects.*;
 import seafilewebapi.libraryobjects.*;
@@ -519,9 +520,26 @@ public interface SeafileWebApi {
 
     /* module Avatar */
 
-    String getUserAvatar(OkHttpClient client, String token, String username, String size);
+    /**
+     * update a specified picture as user avatar
+     * TESTED
+     *
+     * @param client OkHttpClient object
+     * @param token  token of current account
+     * @param avatar File object of the picture which will be updated
+     * @return update successfully or not
+     */
+    boolean updateUserAvatar(OkHttpClient client, String token, File avatar);
 
-    /* module File Activity */
-
-    List<FileActivity> getFileActivities(OkHttpClient client, String token);
+    /**
+     * get the avatar of a specified account
+     * TESTED
+     *
+     * @param client   OkHttpClient object
+     * @param token    token of current account
+     * @param username username whose avatar will be getted
+     * @param size     getted picture size
+     * @return AvatarInfo object with info in
+     */
+    AvatarInfo getUserAvatar(OkHttpClient client, String token, String username, String size);
 }

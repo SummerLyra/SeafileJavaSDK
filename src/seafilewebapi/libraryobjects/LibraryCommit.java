@@ -2,12 +2,36 @@ package seafilewebapi.libraryobjects;
 
 /**
  * @author freezingrainyu
- * @version 1.0
+ * @version 1.1
  * @date 2019/04/18
  */
-public class LibraryCommit extends AbstractCommit {
+public class LibraryCommit {
 
-    public LibraryCommit(long revFileSize, String revFileId, long ctime, String creatorName, String creator, String rootId, String revRenamedOldPath, String parentId, boolean newMerge, String repoId, String desc, String id, boolean conflict, String secondParentId) {
-        super(revFileSize, revFileId, ctime, creatorName, creator, rootId, revRenamedOldPath, parentId, newMerge, repoId, desc, id, conflict, secondParentId);
+    private String commitId;
+    private String time;
+    private String description;
+    private String creator;
+
+    public LibraryCommit(String commitId, String time, String description, String creator) {
+        this.commitId = commitId;
+        this.time =
+        this.description = description;
+        this.creator = creator;
+    }
+
+    public String getCommitId() {
+        return commitId;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCreator() {
+        return creator;
     }
 }

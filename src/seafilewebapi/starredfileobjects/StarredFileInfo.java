@@ -6,13 +6,13 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 /**
  * @author freezingrainyu
- * @version 1.1
+ * @version 1.2
  * @date 2019/04/17
  */
 public class StarredFileInfo {
 
     private String repo;
-    private Instant mtime;
+    private String mtime;
     private int org;
     private String path;
     private boolean dir;
@@ -20,7 +20,7 @@ public class StarredFileInfo {
 
     public StarredFileInfo(String repo, long mtime, int org, String path, boolean dir, long size) {
         this.repo = repo;
-        this.mtime = Instant.EPOCH.plus(mtime, SECONDS);
+        this.mtime = Instant.EPOCH.plus(mtime, SECONDS).toString();
         this.org = org;
         this.path = path;
         this.dir = dir;
@@ -31,7 +31,7 @@ public class StarredFileInfo {
         return repo;
     }
 
-    public Instant getMtime() {
+    public String getMtime() {
         return mtime;
     }
 

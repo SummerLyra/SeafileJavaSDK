@@ -1,22 +1,27 @@
 package seafilewebapi.fileobjects;
 
-import seafilewebapi.libraryobjects.AbstractCommit;
+import java.util.List;
 
 /**
  * @author freezingrainyu
- * @version 1.1
+ * @version 1.2
  * @date 2019/04/18
  */
-public class FileHistory extends AbstractCommit {
+public class FileHistory{
 
-    private int version;
+    private String nextStartCommit;
+    private List<FileCommit> data;
 
-    public FileHistory(long revFileSize, String repoId, long ctime, String creatorName, String creator, String rootId, String revRenamedOldPath, String parentId, boolean newMerge, int version, boolean conflict, String desc, String id, String revFileId, String secondParentId) {
-        super(revFileSize, revFileId, ctime, creatorName, creator, rootId, revRenamedOldPath, parentId, newMerge, repoId, desc, id, conflict, secondParentId);
-        this.version = version;
+    public FileHistory(String nextStartCommit,List<FileCommit> data) {
+        this.nextStartCommit=nextStartCommit;
+        this.data = data;
     }
 
-    public int getVersion() {
-        return version;
+    public String getNextStartCommit() {
+        return nextStartCommit;
+    }
+
+    public List<FileCommit> getData() {
+        return data;
     }
 }

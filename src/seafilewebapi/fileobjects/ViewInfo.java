@@ -6,19 +6,19 @@ import static java.time.temporal.ChronoUnit.MILLIS;
 
 /**
  * @author freezingrainnyu
- * @version 1.0
+ * @version 1.1
  * @date 2019/04/18
  */
 public class ViewInfo {
 
     private String accessToken;
     private String actionUrl;
-    private Instant accessTokenTtl;
+    private String accessTokenTtl;
 
     public ViewInfo(String accessToken, String actionUrl, long accessTokenTtl) {
         this.accessToken = accessToken;
         this.actionUrl = actionUrl;
-        this.accessTokenTtl = Instant.EPOCH.plus(accessTokenTtl, MILLIS);
+        this.accessTokenTtl = Instant.EPOCH.plus(accessTokenTtl, MILLIS).toString();
     }
 
     public String getAccessToken() {
@@ -29,7 +29,7 @@ public class ViewInfo {
         return actionUrl;
     }
 
-    public Instant getAccessTokenTtl() {
+    public String getAccessTokenTtl() {
         return accessTokenTtl;
     }
 }

@@ -223,7 +223,7 @@ public interface SeafileWebApi {
 
     /**
      * get the commit history of a specified library
-     * TESTED
+     * TODO : TO BE ROLLED BACK
      *
      * @param client OkHttpClient object
      * @param token  token of current account
@@ -342,7 +342,7 @@ public interface SeafileWebApi {
 
     /**
      * get the commit history of a specified file
-     * TESTED
+     * TODO : TO BE ROLLED BACK
      *
      * @param client OkHttpClient object
      * @param token  token of current user
@@ -350,7 +350,7 @@ public interface SeafileWebApi {
      * @param path   file path whose commit history will be getted
      * @return list of FileHistory objects with commit history in
      */
-    List<FileHistory> getFileHistory(OkHttpClient client, String token, String repoId, String path);
+    List<FileCommit> getFileHistory(OkHttpClient client, String token, String repoId, String path);
 
     /**
      * fetch a download link of a specified file from a revision

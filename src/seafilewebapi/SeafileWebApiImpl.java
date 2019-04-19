@@ -398,14 +398,12 @@ public class SeafileWebApiImpl implements SeafileWebApi {
         return null;
     }
 
-    //TODO
     @Override
-    public LibraryHistory getLibraryHistory(OkHttpClient client, String token, String repoId) {
+    public List<LibraryHistory> getLibraryHistory(OkHttpClient client, String token, String repoId) {
         Request request = new Request.Builder()
-                .url(SERVICE_URL + "/api/v2.1/repos/" + repoId + "/history/")
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/history/")
                 .header("Authorization", "Token " + token)
                 .header("Accept", "application/json")
-                .header("charset", "utf-8")
                 .header("indent", "4")
                 .get()
                 .build();
@@ -413,7 +411,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                return JSON.parseObject(response.body().string(), LibraryHistory.class);
+                return JSON.parseArray(JSON.parseObject(response.body().string()).getString("commits"),LibraryHistory.class);
             } else {
                 throw new IOException("Unexpected code " + response);
             }
@@ -602,11 +600,10 @@ public class SeafileWebApiImpl implements SeafileWebApi {
         return null;
     }
 
-    //TODO
     @Override
-    public List<FileCommit> getFileHistory(OkHttpClient client, String token, String repoId, String path) {
+    public List<FileHistory> getFileHistory(OkHttpClient client, String token, String repoId, String path) {
         Request request = new Request.Builder()
-                .url(SERVICE_URL + "/api/v2.1/repos/" + repoId + "/file/history/?p=" + path)
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/history/?p=" + path)
                 .header("Content-type","application/x-www-form-urlencoded")
                 .header("Authorization", "Token " + token)
                 .header("Accept", "application/json")
@@ -618,7 +615,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                return JSON.parseArray(JSON.parseObject(response.body().string()).getString("data"), FileCommit.class);
+                return JSON.parseArray(JSON.parseObject(response.body().string()).getString("commits"), FileHistory.class);
             } else {
                 throw new IOException("Unexpected code " + response);
             }

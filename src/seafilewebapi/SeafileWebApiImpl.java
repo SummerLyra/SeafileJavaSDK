@@ -1,7 +1,6 @@
 package seafilewebapi;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,18 +32,28 @@ public class SeafileWebApiImpl implements SeafileWebApi {
         FILE_SERVER_ROOT = fileServerRoot;
     }
 
-    @Override
-    public String ping() {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(SERVICE_URL + "/api2/ping/")
-                .get()
-                .build();
+    private boolean getBooleanResponse(OkHttpClient client, Request request) {
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return true;
+            } else {
+                throw new IOException("Unexpected code " + response);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private String getStringResponse(OkHttpClient client, Request request) {
         try {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return response.body().string();
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -53,8 +62,16 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public String obtainAuthToken(String username, String password) {
-        OkHttpClient client = new OkHttpClient();
+    public String ping(OkHttpClient client) {
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/ping/")
+                .get()
+                .build();
+        return getStringResponse(client, request);
+    }
+
+    @Override
+    public String obtainAuthToken(OkHttpClient client, String username, String password) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("username", username)
                 .add("password", password)
@@ -67,8 +84,9 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                JSONObject jsonObject = JSON.parseObject(response.body().string());
-                return jsonObject.getString("token");
+                return JSON.parseObject(response.body().string()).getString("token");
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,28 +95,17 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public String authPing(String token) {
-        OkHttpClient client = new OkHttpClient();
+    public String authPing(OkHttpClient client, String token) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/auth/ping/")
                 .header("Authorization", "Token " + token)
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return response.body().string();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return getStringResponse(client, request);
     }
 
     @Override
-    public List<ListedAccountInfo> listAccounts(String token) {
-        OkHttpClient client = new OkHttpClient();
+    public List<ListedAccountInfo> listAccounts(OkHttpClient client, String token) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/accounts/")
                 .header("Authorization", "Token " + token)
@@ -111,6 +118,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseArray(response.body().string(), ListedAccountInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -119,8 +128,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public GettedAccountInfo getAccountInfo(String token, String username) {
-        OkHttpClient client = new OkHttpClient();
+    public GettedAccountInfo getAccountInfo(OkHttpClient client, String token, String username) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/accounts/" + username + "/")
                 .header("Authorization", "Token " + token)
@@ -133,6 +141,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), GettedAccountInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -141,8 +151,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean createAccount(String token, String username, String password) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean createAccount(OkHttpClient client, String token, String username, String password) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("password", password)
                 .build();
@@ -153,20 +162,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .put(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean migrateAccount(String token, String fromUser, String toUser) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean migrateAccount(OkHttpClient client, String token, String fromUser, String toUser) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("op", "migrate")
                 .add("to_user", toUser)
@@ -178,20 +178,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean deleteAccount(String token, String username) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean deleteAccount(OkHttpClient client, String token, String username) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/accounts/" + username + "/")
                 .header("Authorization", "Token " + token)
@@ -199,20 +190,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .delete()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public CheckedAccountInfo checkAccountInfo(String token) {
-        OkHttpClient client = new OkHttpClient();
+    public CheckedAccountInfo checkAccountInfo(OkHttpClient client, String token) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/account/info/")
                 .header("Authorization", "Token " + token)
@@ -225,6 +207,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), CheckedAccountInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -233,8 +217,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public ServerInfo getServerInfo() {
-        OkHttpClient client = new OkHttpClient();
+    public ServerInfo getServerInfo(OkHttpClient client) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/server-info/")
                 .get()
@@ -244,6 +227,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), ServerInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -252,8 +237,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public List<StarredFileInfo> listStarredFiles(String token) {
-        OkHttpClient client = new OkHttpClient();
+    public List<StarredFileInfo> listStarredFiles(OkHttpClient client, String token) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/starredfiles/")
                 .header("Authorization", "Token " + token)
@@ -266,6 +250,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseArray(response.body().string(), StarredFileInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -274,8 +260,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean starFile(String token, String repoId, String path) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean starFile(OkHttpClient client, String token, String repoId, String path) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("repo_id", repoId)
                 .add("p", path)
@@ -288,20 +273,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean unStarFile(String token, String repoId, String path) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean unStarFile(OkHttpClient client, String token, String repoId, String path) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/starredfiles/?repo_id=" + repoId + "&p=" + path)
                 .header("Authorization", "Token " + token)
@@ -310,20 +286,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .delete()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public DefaultLibraryInfo getDefaultLibrary(String token) {
-        OkHttpClient client = new OkHttpClient();
+    public DefaultLibraryInfo getDefaultLibrary(OkHttpClient client, String token) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/default-repo/")
                 .header("Authorization", "Token " + token)
@@ -334,6 +301,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), DefaultLibraryInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -342,8 +311,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public DefaultLibraryInfo createDefaultLibrary(String token) {
-        OkHttpClient client = new OkHttpClient();
+    public DefaultLibraryInfo createDefaultLibrary(OkHttpClient client, String token) {
         RequestBody requestBody = new FormBody.Builder()
                 .build();
         Request request = new Request.Builder()
@@ -356,6 +324,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), DefaultLibraryInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -364,8 +334,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public List<ListedLibraryInfo> listLibraries(String token) {
-        OkHttpClient client = new OkHttpClient();
+    public List<ListedLibraryInfo> listLibraries(OkHttpClient client, String token) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/")
                 .header("Authorization", "Token " + token)
@@ -378,6 +347,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseArray(response.body().string(), ListedLibraryInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -386,8 +357,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public GettedLibraryInfo getLibraryInfo(String token, String repoId) {
-        OkHttpClient client = new OkHttpClient();
+    public GettedLibraryInfo getLibraryInfo(OkHttpClient client, String token, String repoId) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/")
                 .header("Authorization", "Token " + token)
@@ -400,6 +370,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), GettedLibraryInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -408,8 +380,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public String getLibraryOwner(String token, String repoId) {
-        OkHttpClient client = new OkHttpClient();
+    public String getLibraryOwner(OkHttpClient client, String token, String repoId) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/owner/")
                 .header("Authorization", "Token " + token)
@@ -421,8 +392,9 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
-                JSONObject jsonObject = JSON.parseObject(response.body().string());
-                return jsonObject.getString("owner");
+                return JSON.parseObject(response.body().string()).getString("owner");
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -431,8 +403,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public LibraryHistory getLibraryHistory(String token, String repoId) {
-        OkHttpClient client = new OkHttpClient();
+    public LibraryHistory getLibraryHistory(OkHttpClient client, String token, String repoId) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/history/")
                 .header("Authorization", "Token " + token)
@@ -445,6 +416,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), LibraryHistory.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -453,8 +426,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public CreatedLibraryInfo createLibrary(String token, String name) {
-        OkHttpClient client = new OkHttpClient();
+    public CreatedLibraryInfo createLibrary(OkHttpClient client, String token, String name) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("name", name)
                 .build();
@@ -470,6 +442,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), CreatedLibraryInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -478,8 +452,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public CreatedLibraryInfo createEncryptedLibrary(String token, String name, String password) {
-        OkHttpClient client = new OkHttpClient();
+    public CreatedLibraryInfo createEncryptedLibrary(OkHttpClient client, String token, String name, String password) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("name", name)
                 .add("passwd", password)
@@ -496,6 +469,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), CreatedLibraryInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -504,8 +479,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean deleteLibrary(String token, String repoId) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean deleteLibrary(OkHttpClient client, String token, String repoId) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/")
                 .header("Authorization", "Token " + token)
@@ -513,20 +487,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .delete()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean renameLibrary(String token, String repoId, String newname) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean renameLibrary(OkHttpClient client, String token, String repoId, String newname) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("repo_name", newname)
                 .build();
@@ -537,20 +502,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean decryptLibrary(String token, String repoId, String password) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean decryptLibrary(OkHttpClient client, String token, String repoId, String password) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("password", password)
                 .build();
@@ -561,20 +517,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public FetchedLibraryDownloadInfo fetchLibraryDownloadInfo(String token, String repoId) {
-        OkHttpClient client = new OkHttpClient();
+    public FetchedLibraryDownloadInfo fetchLibraryDownloadInfo(OkHttpClient client, String token, String repoId) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/download-info/")
                 .header("Authorization", "Token " + token)
@@ -587,6 +534,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), FetchedLibraryDownloadInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -595,8 +544,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public ViewInfo viewFile(String token, String repoId, String path) {
-        OkHttpClient client = new OkHttpClient();
+    public ViewInfo viewFile(OkHttpClient client, String token, String repoId, String path) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/owa-file/?path=" + path)
                 .header("Authorization", "Token " + token)
@@ -610,6 +558,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), ViewInfo.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -618,8 +568,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public String downloadFile(String token, String repoId, String path) {
-        OkHttpClient client = new OkHttpClient();
+    public String downloadFile(OkHttpClient client, String token, String repoId, String path) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/?p=" + path + "&reuse=1")
                 .header("Authorization", "Token " + token)
@@ -628,21 +577,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return response.body().string();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return getStringResponse(client, request);
     }
 
     @Override
-    public FileDetail getFileDetail(String token, String repoId, String path) {
-        OkHttpClient client = new OkHttpClient();
+    public FileDetail getFileDetail(OkHttpClient client, String token, String repoId, String path) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/detail/?p=" + path)
                 .header("Authorization", "Token " + token)
@@ -656,6 +595,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseObject(response.body().string(), FileDetail.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -664,8 +605,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public List<FileHistory> getFileHistory(String token, String repoId, String path) {
-        OkHttpClient client = new OkHttpClient();
+    public List<FileHistory> getFileHistory(OkHttpClient client, String token, String repoId, String path) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/history/?p=" + path)
                 .header("Authorization", "Token " + token)
@@ -679,6 +619,8 @@ public class SeafileWebApiImpl implements SeafileWebApi {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 return JSON.parseArray(JSON.parseObject(response.body().string()).getString("commits"), FileHistory.class);
+            } else {
+                throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -687,8 +629,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public String downloadFileFromRevision(String token, String repoId, String path, String commitId) {
-        OkHttpClient client = new OkHttpClient();
+    public String downloadFileFromRevision(OkHttpClient client, String token, String repoId, String path, String commitId) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/revision/?p=" + path + "&commit_id=" + commitId)
                 .header("Authorization", "Token " + token)
@@ -697,21 +638,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return response.body().string();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return getStringResponse(client, request);
     }
 
     @Override
-    public boolean createFile(String token, String repoId, String path) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean createFile(OkHttpClient client, String token, String repoId, String path) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("operation", "create")
                 .build();
@@ -723,20 +654,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean renameFile(String token, String repoId, String path, String newname) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean renameFile(OkHttpClient client, String token, String repoId, String path, String newname) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("operation", "rename")
                 .add("newname", newname)
@@ -749,20 +671,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean lockFile(String token, String repoId, String path) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean lockFile(OkHttpClient client, String token, String repoId, String path) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("operation", "lock")
                 .add("p", path)
@@ -775,20 +688,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .put(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean unLockFile(String token, String repoId, String path) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean unLockFile(OkHttpClient client, String token, String repoId, String path) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("operation", "unlock")
                 .add("p", path)
@@ -801,20 +705,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .put(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean moveFile(String token, String repoId, String path, String dstRepo, String dstDir) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean moveFile(OkHttpClient client, String token, String repoId, String path, String dstRepo, String dstDir) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("operation", "move")
                 .add("dst_repo", dstRepo)
@@ -828,20 +723,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean copyFile(String token, String repoId, String path, String filename, String dstRepo, String dstDir) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean copyFile(OkHttpClient client, String token, String repoId, String path, String filename, String dstRepo, String dstDir) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("operation", "copy")
                 .add("dst_repo", dstRepo)
@@ -853,20 +739,11 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("Authorization", "Token " + token)
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return getBooleanResponse(client, request);
     }
 
     @Override
-    public boolean revertFile(String token, String repoId, String path, String commitId) {
-        OkHttpClient client = new OkHttpClient();
+    public boolean revertFile(OkHttpClient client, String token, String repoId, String path, String commitId) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("commit_id", commitId)
                 .add("p", path)
@@ -878,89 +755,81 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .put(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return getBooleanResponse(client, request);
+    }
+
+    @Override
+    public boolean deleteFile(OkHttpClient client, String token, String repoId, String path) {
         return false;
     }
 
     @Override
-    public boolean deleteFile(String token, String repoId, String path) {
-        return false;
-    }
-
-    @Override
-    public String getUploadLink(String token, String repoId, String path, int replace) {
+    public String getUploadLink(OkHttpClient client, String token, String repoId, String path, int replace) {
         return null;
     }
 
     @Override
-    public boolean uploadFile(String token, String uploadLink, String parentDir, File... files) {
+    public boolean uploadFile(OkHttpClient client, String token, String uploadLink, String parentDir, File... files) {
         return false;
     }
 
     @Override
-    public String getUpdateLink(String token, String repoId, String path) {
+    public String getUpdateLink(OkHttpClient client, String token, String repoId, String path) {
         return null;
     }
 
     @Override
-    public boolean updateFile(String token, String updateLink, String targetFile, File file) {
+    public boolean updateFile(OkHttpClient client, String token, String updateLink, String targetFile, File file) {
         return false;
     }
 
     @Override
-    public List<DirectoryEntry> listDirectoryEntries(String token, String repoId, String path) {
+    public List<DirectoryEntry> listDirectoryEntries(OkHttpClient client, String token, String repoId, String path) {
         return null;
     }
 
     @Override
-    public boolean createNewDirectory(String token, String repoId, String path) {
+    public boolean createNewDirectory(OkHttpClient client, String token, String repoId, String path) {
         return false;
     }
 
     @Override
-    public boolean renameDirectory(String token, String repoId, String path, String newname) {
+    public boolean renameDirectory(OkHttpClient client, String token, String repoId, String path, String newname) {
         return false;
     }
 
     @Override
-    public boolean deleteDirectory(String token, String repoId, String path) {
+    public boolean deleteDirectory(OkHttpClient client, String token, String repoId, String path) {
         return false;
     }
 
     @Override
-    public String downloadDirectory(String token, String repoId, String path) {
+    public String downloadDirectory(OkHttpClient client, String token, String repoId, String path) {
         return null;
     }
 
     @Override
-    public boolean multiCopy(String token, String path, String dstRepo, String dstDir, String... fileNames) {
+    public boolean multiCopy(OkHttpClient client, String token, String path, String dstRepo, String dstDir, String... fileNames) {
         return false;
     }
 
     @Override
-    public boolean multiMove(String token, String path, String dstRepo, String dstDir, String... fileNames) {
+    public boolean multiMove(OkHttpClient client, String token, String path, String dstRepo, String dstDir, String... fileNames) {
         return false;
     }
 
     @Override
-    public boolean multiDelete(String token, String path, String... fileNames) {
+    public boolean multiDelete(OkHttpClient client, String token, String path, String... fileNames) {
         return false;
     }
 
     @Override
-    public String getUserAvatar(String token, String username, String size) {
+    public String getUserAvatar(OkHttpClient client, String token, String username, String size) {
         return null;
     }
 
     @Override
-    public List<FileActivity> getFileActivities(String token) {
+    public List<FileActivity> getFileActivities(OkHttpClient client, String token) {
         return null;
     }
 }

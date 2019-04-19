@@ -1,5 +1,6 @@
 package seafilewebapi;
 
+import okhttp3.OkHttpClient;
 import seafilewebapi.accountobjects.*;
 import seafilewebapi.directoryobjects.*;
 import seafilewebapi.fileobjects.*;
@@ -24,7 +25,7 @@ public interface SeafileWebApi {
      *
      * @return "pong"
      */
-    String ping();
+    String ping(OkHttpClient client);
 
     /**
      * obtain the token of a specified account
@@ -34,7 +35,7 @@ public interface SeafileWebApi {
      * @param password password of the account
      * @return token of specified user
      */
-    String obtainAuthToken(String username, String password);
+    String obtainAuthToken(OkHttpClient client, String username, String password);
 
     /**
      * ping with a valid token
@@ -43,7 +44,7 @@ public interface SeafileWebApi {
      * @param token token
      * @return "pong"
      */
-    String authPing(String token);
+    String authPing(OkHttpClient client, String token);
 
     /* module Account */
 
@@ -55,7 +56,7 @@ public interface SeafileWebApi {
      * @param token token of admin
      * @return list of ListedAccountInfo objects with usernames in
      */
-    List<ListedAccountInfo> listAccounts(String token);
+    List<ListedAccountInfo> listAccounts(OkHttpClient client, String token);
 
     /**
      * get the info of a specified account
@@ -66,7 +67,7 @@ public interface SeafileWebApi {
      * @param username username whose info will be getted
      * @return GettedAccountInfo object with info in
      */
-    GettedAccountInfo getAccountInfo(String token, String username);
+    GettedAccountInfo getAccountInfo(OkHttpClient client, String token, String username);
 
     /**
      * create a new account
@@ -78,7 +79,7 @@ public interface SeafileWebApi {
      * @param password password of new account
      * @return create successfully or not
      */
-    boolean createAccount(String token, String username, String password);
+    boolean createAccount(OkHttpClient client, String token, String username, String password);
 
     /**
      * migrate all libraries of one account to another one
@@ -90,7 +91,7 @@ public interface SeafileWebApi {
      * @param toUser   username of account where libraries will be placed
      * @return migrate successfully or not
      */
-    boolean migrateAccount(String token, String fromUser, String toUser);
+    boolean migrateAccount(OkHttpClient client, String token, String fromUser, String toUser);
 
     /**
      * delete an existed account
@@ -101,7 +102,7 @@ public interface SeafileWebApi {
      * @param username username whose account will be deleted
      * @return delete successfully or not
      */
-    boolean deleteAccount(String token, String username);
+    boolean deleteAccount(OkHttpClient client, String token, String username);
 
     /**
      * check the info of a specified account
@@ -110,7 +111,7 @@ public interface SeafileWebApi {
      * @param token token of current account
      * @return CheckedAccountInfo object with info in
      */
-    CheckedAccountInfo checkAccountInfo(String token);
+    CheckedAccountInfo checkAccountInfo(OkHttpClient client, String token);
 
     /**
      * get the info of the server
@@ -118,7 +119,7 @@ public interface SeafileWebApi {
      *
      * @return ServerInfo object with info in
      */
-    ServerInfo getServerInfo();
+    ServerInfo getServerInfo(OkHttpClient client);
 
     /* module Starred File */
 
@@ -129,7 +130,7 @@ public interface SeafileWebApi {
      * @param token token of current account
      * @return list of StarredFileInfo objects with info in
      */
-    List<StarredFileInfo> listStarredFiles(String token);
+    List<StarredFileInfo> listStarredFiles(OkHttpClient client, String token);
 
     /**
      * star a specified file
@@ -140,7 +141,7 @@ public interface SeafileWebApi {
      * @param path   file path
      * @return star successfully or not
      */
-    boolean starFile(String token, String repoId, String path);
+    boolean starFile(OkHttpClient client, String token, String repoId, String path);
 
     /**
      * unstar a starred file
@@ -151,7 +152,7 @@ public interface SeafileWebApi {
      * @param path   file path
      * @return unstar successfully or not
      */
-    boolean unStarFile(String token, String repoId, String path);
+    boolean unStarFile(OkHttpClient client, String token, String repoId, String path);
 
     /* module Library */
 
@@ -162,7 +163,7 @@ public interface SeafileWebApi {
      * @param token token of current account
      * @return DefaultLibraryInfo object with info in
      */
-    DefaultLibraryInfo getDefaultLibrary(String token);
+    DefaultLibraryInfo getDefaultLibrary(OkHttpClient client, String token);
 
     /**
      * create a default library
@@ -171,7 +172,7 @@ public interface SeafileWebApi {
      * @param token token of current account
      * @return DefaultLibraryInfo object with info in
      */
-    DefaultLibraryInfo createDefaultLibrary(String token);
+    DefaultLibraryInfo createDefaultLibrary(OkHttpClient client, String token);
 
     /**
      * obtain a list of all libraries
@@ -180,7 +181,7 @@ public interface SeafileWebApi {
      * @param token token of current account
      * @return list of ListedLibraryInfo objects with info in
      */
-    List<ListedLibraryInfo> listLibraries(String token);
+    List<ListedLibraryInfo> listLibraries(OkHttpClient client, String token);
 
     /**
      * get the info of a specified library
@@ -190,7 +191,7 @@ public interface SeafileWebApi {
      * @param repoId library id whose info will be getted
      * @return GettedLibraryInfo object with info in
      */
-    GettedLibraryInfo getLibraryInfo(String token, String repoId);
+    GettedLibraryInfo getLibraryInfo(OkHttpClient client, String token, String repoId);
 
     /**
      * get owner username of a specified library
@@ -200,7 +201,7 @@ public interface SeafileWebApi {
      * @param repoId library id whose owner username will be getted
      * @return owner username of library
      */
-    String getLibraryOwner(String token, String repoId);
+    String getLibraryOwner(OkHttpClient client, String token, String repoId);
 
     /**
      * get the commit history of a specified library
@@ -210,7 +211,7 @@ public interface SeafileWebApi {
      * @param repoId library id whose commit history will be getted
      * @return LibraryHistory object with commit history in
      */
-    LibraryHistory getLibraryHistory(String token, String repoId);
+    LibraryHistory getLibraryHistory(OkHttpClient client, String token, String repoId);
 
     /**
      * create a new library
@@ -220,7 +221,7 @@ public interface SeafileWebApi {
      * @param name  name of new library
      * @return CreatedLibraryInfo object with info in
      */
-    CreatedLibraryInfo createLibrary(String token, String name);
+    CreatedLibraryInfo createLibrary(OkHttpClient client, String token, String name);
 
     /**
      * create a new encrypted library
@@ -231,7 +232,7 @@ public interface SeafileWebApi {
      * @param password password of new library
      * @return CreatedLibraryInfo object with info in
      */
-    CreatedLibraryInfo createEncryptedLibrary(String token, String name, String password);
+    CreatedLibraryInfo createEncryptedLibrary(OkHttpClient client, String token, String name, String password);
 
     /**
      * delete an existed library
@@ -241,7 +242,7 @@ public interface SeafileWebApi {
      * @param repoId library id which will be deleted
      * @return delete successfully or not
      */
-    boolean deleteLibrary(String token, String repoId);
+    boolean deleteLibrary(OkHttpClient client, String token, String repoId);
 
     /**
      * rename an existed library
@@ -252,7 +253,7 @@ public interface SeafileWebApi {
      * @param newname new name of the library
      * @return rename successfully or not
      */
-    boolean renameLibrary(String token, String repoId, String newname);
+    boolean renameLibrary(OkHttpClient client, String token, String repoId, String newname);
 
     /**
      * decrypt an encrypted library
@@ -263,7 +264,7 @@ public interface SeafileWebApi {
      * @param password password of the library
      * @return decrypt successfully or not
      */
-    boolean decryptLibrary(String token, String repoId, String password);
+    boolean decryptLibrary(OkHttpClient client, String token, String repoId, String password);
 
     /**
      * fetch download info of a specified library
@@ -273,7 +274,7 @@ public interface SeafileWebApi {
      * @param repoId library id whose download info will be fetched
      * @return FetchedLibraryDownloadInfo object with info in
      */
-    FetchedLibraryDownloadInfo fetchLibraryDownloadInfo(String token, String repoId);
+    FetchedLibraryDownloadInfo fetchLibraryDownloadInfo(OkHttpClient client, String token, String repoId);
 
     /* module File */
 
@@ -287,7 +288,7 @@ public interface SeafileWebApi {
      * @param path   file path which will be viewed
      * @return ViewInfo object with info in
      */
-    ViewInfo viewFile(String token, String repoId, String path);
+    ViewInfo viewFile(OkHttpClient client, String token, String repoId, String path);
 
     /**
      * fetch a download link of a specified file
@@ -298,7 +299,7 @@ public interface SeafileWebApi {
      * @param path   file path which will be downloaded
      * @return download link of file
      */
-    String downloadFile(String token, String repoId, String path);
+    String downloadFile(OkHttpClient client, String token, String repoId, String path);
 
     /**
      * get the detail of a specified file
@@ -309,7 +310,7 @@ public interface SeafileWebApi {
      * @param path   file path whose details will be getted
      * @return FileDetail object with details in
      */
-    FileDetail getFileDetail(String token, String repoId, String path);
+    FileDetail getFileDetail(OkHttpClient client, String token, String repoId, String path);
 
     /**
      * get the commit history of a specified file
@@ -320,7 +321,7 @@ public interface SeafileWebApi {
      * @param path   file path whose commit history will be getted
      * @return list of FileHistory objects with commit history in
      */
-    List<FileHistory> getFileHistory(String token, String repoId, String path);
+    List<FileHistory> getFileHistory(OkHttpClient client, String token, String repoId, String path);
 
     /**
      * fetch a download link of a specified file from a revision
@@ -332,7 +333,7 @@ public interface SeafileWebApi {
      * @param commitId commit id of the revision
      * @return download link of file
      */
-    String downloadFileFromRevision(String token, String repoId, String path, String commitId);
+    String downloadFileFromRevision(OkHttpClient client, String token, String repoId, String path, String commitId);
 
     /**
      * create a new file
@@ -343,7 +344,7 @@ public interface SeafileWebApi {
      * @param path   path and filename of the new file
      * @return create successfully or not
      */
-    boolean createFile(String token, String repoId, String path);
+    boolean createFile(OkHttpClient client, String token, String repoId, String path);
 
     /**
      * rename an existed file
@@ -355,7 +356,7 @@ public interface SeafileWebApi {
      * @param newname new name of the file
      * @return rename successfully or not
      */
-    boolean renameFile(String token, String repoId, String path, String newname);
+    boolean renameFile(OkHttpClient client, String token, String repoId, String path, String newname);
 
     /**
      * lock a specified file
@@ -367,7 +368,7 @@ public interface SeafileWebApi {
      * @param path   file path which will be locked
      * @return lock successfully or not
      */
-    boolean lockFile(String token, String repoId, String path);
+    boolean lockFile(OkHttpClient client, String token, String repoId, String path);
 
     /**
      * unlock a locked file
@@ -379,7 +380,7 @@ public interface SeafileWebApi {
      * @param path   file path which will be unlocked
      * @return unlock successfully or not
      */
-    boolean unLockFile(String token, String repoId, String path);
+    boolean unLockFile(OkHttpClient client, String token, String repoId, String path);
 
     /**
      * move a specified file
@@ -392,7 +393,7 @@ public interface SeafileWebApi {
      * @param dstDir  file path where will be moved to
      * @return move successfully or not
      */
-    boolean moveFile(String token, String repoId, String path, String dstRepo, String dstDir);
+    boolean moveFile(OkHttpClient client, String token, String repoId, String path, String dstRepo, String dstDir);
 
     /**
      * copy a specified file
@@ -406,7 +407,7 @@ public interface SeafileWebApi {
      * @param dstDir   file path where will be copied to
      * @return copy successfully or not
      */
-    boolean copyFile(String token, String repoId, String path, String filename, String dstRepo, String dstDir);
+    boolean copyFile(OkHttpClient client, String token, String repoId, String path, String filename, String dstRepo, String dstDir);
 
     /**
      * revert a specified file
@@ -418,43 +419,43 @@ public interface SeafileWebApi {
      * @param commitId commit id of the revision
      * @return revert successfully or not
      */
-    boolean revertFile(String token, String repoId, String path, String commitId);
+    boolean revertFile(OkHttpClient client, String token, String repoId, String path, String commitId);
 
-    boolean deleteFile(String token, String repoId, String path);
+    boolean deleteFile(OkHttpClient client, String token, String repoId, String path);
 
-    String getUploadLink(String token, String repoId, String path, int replace);
+    String getUploadLink(OkHttpClient client, String token, String repoId, String path, int replace);
 
-    boolean uploadFile(String token, String uploadLink, String parentDir, File... files);
+    boolean uploadFile(OkHttpClient client, String token, String uploadLink, String parentDir, File... files);
 
-    String getUpdateLink(String token, String repoId, String path);
+    String getUpdateLink(OkHttpClient client, String token, String repoId, String path);
 
-    boolean updateFile(String token, String updateLink, String targetFile, File file);
+    boolean updateFile(OkHttpClient client, String token, String updateLink, String targetFile, File file);
 
     /* module Directory */
 
-    List<DirectoryEntry> listDirectoryEntries(String token, String repoId, String path);
+    List<DirectoryEntry> listDirectoryEntries(OkHttpClient client, String token, String repoId, String path);
 
-    boolean createNewDirectory(String token, String repoId, String path);
+    boolean createNewDirectory(OkHttpClient client, String token, String repoId, String path);
 
-    boolean renameDirectory(String token, String repoId, String path, String newname);
+    boolean renameDirectory(OkHttpClient client, String token, String repoId, String path, String newname);
 
-    boolean deleteDirectory(String token, String repoId, String path);
+    boolean deleteDirectory(OkHttpClient client, String token, String repoId, String path);
 
-    String downloadDirectory(String token, String repoId, String path);
+    String downloadDirectory(OkHttpClient client, String token, String repoId, String path);
 
     /* module Multiple Files or Directories */
 
-    boolean multiCopy(String token, String path, String dstRepo, String dstDir, String... fileNames);
+    boolean multiCopy(OkHttpClient client, String token, String path, String dstRepo, String dstDir, String... fileNames);
 
-    boolean multiMove(String token, String path, String dstRepo, String dstDir, String... fileNames);
+    boolean multiMove(OkHttpClient client, String token, String path, String dstRepo, String dstDir, String... fileNames);
 
-    boolean multiDelete(String token, String path, String... fileNames);
+    boolean multiDelete(OkHttpClient client, String token, String path, String... fileNames);
 
     /* module Avatar */
 
-    String getUserAvatar(String token, String username, String size);
+    String getUserAvatar(OkHttpClient client, String token, String username, String size);
 
     /* module File Activity */
 
-    List<FileActivity> getFileActivities(String token);
+    List<FileActivity> getFileActivities(OkHttpClient client, String token);
 }

@@ -470,13 +470,32 @@ public interface SeafileWebApi {
      */
     boolean deleteFile(OkHttpClient client, String token, String repoId, String path);
 
-    String getUploadLink(OkHttpClient client, String token, String repoId, String path, int replace);
+    /**
+     * upload a specified file
+     * TESTED
+     *
+     * @param client    OkHttpClient object
+     * @param token     token of current account
+     * @param repoId    library id where the file will be uploaded to
+     * @param file      File object of the file which will be uploaded
+     * @param parentDir file path where will be uploaded to
+     * @param replace   whether to overwrite existing files: 0(not overwrite, default) and 1(overwrite)
+     * @return upload successfully or not
+     */
+    boolean uploadFile(OkHttpClient client, String token, String repoId, File file, String parentDir, String replace);
 
-    boolean uploadFile(OkHttpClient client, String token, String uploadLink, String parentDir, File files);
-
-    String getUpdateLink(OkHttpClient client, String token, String repoId, String path);
-
-    boolean updateFile(OkHttpClient client, String token, String updateLink, String targetFile, File file);
+    /**
+     * update an existed file
+     * TESTED
+     *
+     * @param client    OkHttpClient object
+     * @param token     token of current account
+     * @param repoId    library id where the file will be updated in
+     * @param file      File object of the file which will be updated
+     * @param updateDir file path where will be updated to
+     * @return update successfully or not
+     */
+    boolean updateFile(OkHttpClient client, String token, String repoId, File file, String updateDir);
 
     /* module Directory */
 

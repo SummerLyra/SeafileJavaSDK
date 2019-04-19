@@ -733,6 +733,9 @@ public class SeafileWebApiImpl implements SeafileWebApi {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/?p=" + path)
                 .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
                 .post(requestBody)
                 .build();
         return getBooleanResponse(client, request);
@@ -768,39 +771,49 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public String getUploadLink(OkHttpClient client, String token, String repoId, String path, int replace) {
-        Request request = new Request.Builder()
-                .url(SERVICE_URL + "/api2/repos/" + repoId + "/upload-link/?p=" + path + "&replace=" + replace)
+    public boolean uploadFile(OkHttpClient client, String token, String repoId, File file, String parentDir, String replace) {
+        Request linkRequest = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/upload-link/?p=" + parentDir)
                 .header("Authorization", "Token " + token)
                 .get()
                 .build();
-        return getStringResponse(client, request);
-    }
-
-    @Override
-    public boolean uploadFile(OkHttpClient client, String token, String uploadLink, String parentDir, File file) {
+        String uploadLink = getStringResponse(client, linkRequest);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("application/octet-stream"), file))
-                .addFormDataPart("filename", file.getName())
                 .addFormDataPart("parent_dir", parentDir)
+                .addFormDataPart("replace", replace)
                 .build();
-        Request request = new Request.Builder()
+        assert uploadLink != null;
+        Request uploadRequest = new Request.Builder()
                 .url(uploadLink.substring(1, uploadLink.length() - 1))
                 .header("Authorization", "Token " + token)
                 .post(requestBody)
                 .build();
-        return getBooleanResponse(client, request);
+        return getBooleanResponse(client, uploadRequest);
     }
 
     @Override
-    public String getUpdateLink(OkHttpClient client, String token, String repoId, String path) {
-        return null;
-    }
-
-    @Override
-    public boolean updateFile(OkHttpClient client, String token, String updateLink, String targetFile, File file) {
-        return false;
+    public boolean updateFile(OkHttpClient client, String token, String repoId, File file, String updateDir) {
+        Request linkRequest = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/update-link/?p=" + updateDir)
+                .header("Authorization", "Token " + token)
+                .get()
+                .build();
+        String uploadLink = getStringResponse(client, linkRequest);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("application/octet-stream"), file))
+                .addFormDataPart("filenames", file.getName())
+                .addFormDataPart("target_file", updateDir + "/" + file.getName())
+                .build();
+        assert uploadLink != null;
+        Request uploadRequest = new Request.Builder()
+                .url(uploadLink.substring(1, uploadLink.length() - 1))
+                .header("Authorization", "Token " + token)
+                .post(requestBody)
+                .build();
+        return getBooleanResponse(client, uploadRequest);
     }
 
     @Override

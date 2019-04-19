@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * @author freezingrainyu
- * @version 1.2
+ * @version 1.3
  * @date 2019/04/16
  */
 public interface SeafileWebApi {
@@ -23,6 +23,7 @@ public interface SeafileWebApi {
      * ping
      * TESTED
      *
+     * @param client OkHttpClient object
      * @return "pong"
      */
     String ping(OkHttpClient client);
@@ -31,6 +32,7 @@ public interface SeafileWebApi {
      * obtain the token of a specified account
      * TESTED
      *
+     * @param client   OkHttpClient object
      * @param username username whose token will be obtained
      * @param password password of the account
      * @return token of specified user
@@ -41,7 +43,8 @@ public interface SeafileWebApi {
      * ping with a valid token
      * TESTED
      *
-     * @param token token
+     * @param client OkHttpClient object
+     * @param token  token
      * @return "pong"
      */
     String authPing(OkHttpClient client, String token);
@@ -53,7 +56,8 @@ public interface SeafileWebApi {
      * ADMIN ONLY
      * TESTED
      *
-     * @param token token of admin
+     * @param client OkHttpClient object
+     * @param token  token of admin
      * @return list of ListedAccountInfo objects with usernames in
      */
     List<ListedAccountInfo> listAccounts(OkHttpClient client, String token);
@@ -63,6 +67,7 @@ public interface SeafileWebApi {
      * ADMIN ONLY
      * TESTED
      *
+     * @param client   OkHttpClient object
      * @param token    token of admin
      * @param username username whose info will be getted
      * @return GettedAccountInfo object with info in
@@ -74,6 +79,7 @@ public interface SeafileWebApi {
      * ADMIN ONLY
      * TESTED
      *
+     * @param client   OkHttpClient object
      * @param token    token of admin
      * @param username username of new account
      * @param password password of new account
@@ -86,6 +92,7 @@ public interface SeafileWebApi {
      * ADMIN ONLY
      * TESTED
      *
+     * @param client   OkHttpClient object
      * @param token    token of admin
      * @param fromUser username whose libraries will be migrated
      * @param toUser   username of account where libraries will be placed
@@ -98,6 +105,7 @@ public interface SeafileWebApi {
      * ADMIN ONLY
      * TESTED
      *
+     * @param client   OkHttpClient object
      * @param token    token of admin
      * @param username username whose account will be deleted
      * @return delete successfully or not
@@ -108,7 +116,8 @@ public interface SeafileWebApi {
      * check the info of a specified account
      * TESTED
      *
-     * @param token token of current account
+     * @param client OkHttpClient object
+     * @param token  token of current account
      * @return CheckedAccountInfo object with info in
      */
     CheckedAccountInfo checkAccountInfo(OkHttpClient client, String token);
@@ -117,6 +126,7 @@ public interface SeafileWebApi {
      * get the info of the server
      * TESTED
      *
+     * @param client OkHttpClient object
      * @return ServerInfo object with info in
      */
     ServerInfo getServerInfo(OkHttpClient client);
@@ -127,7 +137,8 @@ public interface SeafileWebApi {
      * obtain a list of all starred files
      * TESTED
      *
-     * @param token token of current account
+     * @param client OkHttpClient object
+     * @param token  token of current account
      * @return list of StarredFileInfo objects with info in
      */
     List<StarredFileInfo> listStarredFiles(OkHttpClient client, String token);
@@ -136,6 +147,7 @@ public interface SeafileWebApi {
      * star a specified file
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current account
      * @param repoId library id which includes the file to be starred
      * @param path   file path
@@ -147,6 +159,7 @@ public interface SeafileWebApi {
      * unstar a starred file
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current account
      * @param repoId library id which includes the file to be unstarred
      * @param path   file path
@@ -160,7 +173,8 @@ public interface SeafileWebApi {
      * get the info of default library
      * TESTED
      *
-     * @param token token of current account
+     * @param client OkHttpClient object
+     * @param token  token of current account
      * @return DefaultLibraryInfo object with info in
      */
     DefaultLibraryInfo getDefaultLibrary(OkHttpClient client, String token);
@@ -169,7 +183,8 @@ public interface SeafileWebApi {
      * create a default library
      * TESTED
      *
-     * @param token token of current account
+     * @param client OkHttpClient object
+     * @param token  token of current account
      * @return DefaultLibraryInfo object with info in
      */
     DefaultLibraryInfo createDefaultLibrary(OkHttpClient client, String token);
@@ -178,7 +193,8 @@ public interface SeafileWebApi {
      * obtain a list of all libraries
      * TESTED
      *
-     * @param token token of current account
+     * @param client OkHttpClient object
+     * @param token  token of current account
      * @return list of ListedLibraryInfo objects with info in
      */
     List<ListedLibraryInfo> listLibraries(OkHttpClient client, String token);
@@ -187,6 +203,7 @@ public interface SeafileWebApi {
      * get the info of a specified library
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current account
      * @param repoId library id whose info will be getted
      * @return GettedLibraryInfo object with info in
@@ -197,6 +214,7 @@ public interface SeafileWebApi {
      * get owner username of a specified library
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current account
      * @param repoId library id whose owner username will be getted
      * @return owner username of library
@@ -207,6 +225,7 @@ public interface SeafileWebApi {
      * get the commit history of a specified library
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current account
      * @param repoId library id whose commit history will be getted
      * @return LibraryHistory object with commit history in
@@ -217,8 +236,9 @@ public interface SeafileWebApi {
      * create a new library
      * TESTED
      *
-     * @param token token of current account
-     * @param name  name of new library
+     * @param client OkHttpClient object
+     * @param token  token of current account
+     * @param name   name of new library
      * @return CreatedLibraryInfo object with info in
      */
     CreatedLibraryInfo createLibrary(OkHttpClient client, String token, String name);
@@ -227,6 +247,7 @@ public interface SeafileWebApi {
      * create a new encrypted library
      * TESTED
      *
+     * @param client   OkHttpClient object
      * @param token    token of current account
      * @param name     name of new library
      * @param password password of new library
@@ -238,6 +259,7 @@ public interface SeafileWebApi {
      * delete an existed library
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current account
      * @param repoId library id which will be deleted
      * @return delete successfully or not
@@ -248,6 +270,7 @@ public interface SeafileWebApi {
      * rename an existed library
      * TESTED
      *
+     * @param client  OkHttpClient object
      * @param token   token of current account
      * @param repoId  library id which will be renamed
      * @param newname new name of the library
@@ -259,6 +282,7 @@ public interface SeafileWebApi {
      * decrypt an encrypted library
      * TESTED
      *
+     * @param client   OkHttpClient object
      * @param token    token of current account
      * @param repoId   library id which will be decrypted
      * @param password password of the library
@@ -270,6 +294,7 @@ public interface SeafileWebApi {
      * fetch download info of a specified library
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current user
      * @param repoId library id whose download info will be fetched
      * @return FetchedLibraryDownloadInfo object with info in
@@ -283,6 +308,7 @@ public interface SeafileWebApi {
      * TO BE TESTED
      * PRO EDITION ONLY
      *
+     * @param client OkHttpClient object
      * @param token  token of current user
      * @param repoId library id where the file will be viewed in
      * @param path   file path which will be viewed
@@ -294,6 +320,7 @@ public interface SeafileWebApi {
      * fetch a download link of a specified file
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current user
      * @param repoId library id where the file will be downloaded in
      * @param path   file path which will be downloaded
@@ -305,6 +332,7 @@ public interface SeafileWebApi {
      * get the detail of a specified file
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current user
      * @param repoId library id where the file whose details will be getted in
      * @param path   file path whose details will be getted
@@ -316,6 +344,7 @@ public interface SeafileWebApi {
      * get the commit history of a specified file
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current user
      * @param repoId library id where the file whose commit history will be getted in
      * @param path   file path whose commit history will be getted
@@ -327,6 +356,7 @@ public interface SeafileWebApi {
      * fetch a download link of a specified file from a revision
      * TESTED
      *
+     * @param client   OkHttpClient object
      * @param token    token of current user
      * @param repoId   library id where the file will be downloaded in
      * @param path     file path which will be downloaded
@@ -339,6 +369,7 @@ public interface SeafileWebApi {
      * create a new file
      * TESTED
      *
+     * @param client OkHttpClient object
      * @param token  token of current account
      * @param repoId library id where the new file will be placed in
      * @param path   path and filename of the new file
@@ -350,6 +381,7 @@ public interface SeafileWebApi {
      * rename an existed file
      * TESTED
      *
+     * @param client  OkHttpClient object
      * @param token   token of current account
      * @param repoId  library id where the file will be renamed in
      * @param path    file path which will be renamed
@@ -363,6 +395,7 @@ public interface SeafileWebApi {
      * TO BE TESTED
      * PRO EDITION ONLY
      *
+     * @param client OkHttpClient object
      * @param token  token of current account
      * @param repoId library id where the file will be locked in
      * @param path   file path which will be locked
@@ -375,6 +408,7 @@ public interface SeafileWebApi {
      * TO BE TESTED
      * PRO EDITION ONLY
      *
+     * @param client OkHttpClient object
      * @param token  token of current account
      * @param repoId library id where the file will be unlocked in
      * @param path   file path which will be unlocked
@@ -386,6 +420,7 @@ public interface SeafileWebApi {
      * move a specified file
      * TESTED
      *
+     * @param client  OkHttpClient object
      * @param token   token of current account
      * @param repoId  library id where the file will be move in
      * @param path    file path which will be moved
@@ -399,6 +434,7 @@ public interface SeafileWebApi {
      * copy a specified file
      * TESTED
      *
+     * @param client   OkHttpClient object
      * @param token    token of current account
      * @param repoId   library id where the file will be copied in
      * @param path     file path which will be copied
@@ -413,6 +449,7 @@ public interface SeafileWebApi {
      * revert a specified file
      * TESTED
      *
+     * @param client   OkHttpClient object
      * @param token    token of current account
      * @param repoId   library id where the file will be reverted in
      * @param path     file path which will be reverted
@@ -421,11 +458,21 @@ public interface SeafileWebApi {
      */
     boolean revertFile(OkHttpClient client, String token, String repoId, String path, String commitId);
 
+    /**
+     * delete an existed file
+     * TESTED
+     *
+     * @param client OkHttpClient object
+     * @param token  token of current account
+     * @param repoId library id where the file will be deleted in
+     * @param path   file path which will be deleted
+     * @return delete successfully or not
+     */
     boolean deleteFile(OkHttpClient client, String token, String repoId, String path);
 
     String getUploadLink(OkHttpClient client, String token, String repoId, String path, int replace);
 
-    boolean uploadFile(OkHttpClient client, String token, String uploadLink, String parentDir, File... files);
+    boolean uploadFile(OkHttpClient client, String token, String uploadLink, String parentDir, File files);
 
     String getUpdateLink(OkHttpClient client, String token, String repoId, String path);
 

@@ -16,15 +16,17 @@ import seafilewebapi.starredfileobjects.*;
 
 /**
  * @author freezingrainyu
- * @version 1.3
+ * @version 1.5
  * @date 2019/04/16
  */
 public class SeafileWebApiImpl implements SeafileWebApi {
 
     private final String SERVICE_URL;
+    private final String FILE_SERVER_ROOT;
 
-    public SeafileWebApiImpl(String serviceUrl) {
+    public SeafileWebApiImpl(String serviceUrl, String fileServerRoot) {
         SERVICE_URL = serviceUrl;
+        FILE_SERVER_ROOT = fileServerRoot;
     }
 
     private boolean parseBooleanResponse(OkHttpClient client, Request request) {
@@ -101,6 +103,29 @@ public class SeafileWebApiImpl implements SeafileWebApi {
         return null;
     }
 
+    private <T> List<T> parsePartArrayResponse(OkHttpClient client, Request request, Class<T> clazz, String key) {
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                return JSON.parseArray(JSON.parseObject(response.body().string()).getString(key), clazz);
+            } else {
+                throw new IOException("Unexpected code " + response);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String linkFilenames(String... filenames) {
+        StringBuffer linkingFilenames = new StringBuffer();
+        for (String f : filenames) {
+            linkingFilenames.append(f).append(":");
+        }
+        return linkingFilenames.delete(linkingFilenames.length() - 1, linkingFilenames.length()).toString();
+    }
+
     @Override
     public String ping(OkHttpClient client) {
         Request request = new Request.Builder()
@@ -120,7 +145,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .url(SERVICE_URL + "/api2/auth-token/")
                 .post(requestBody)
                 .build();
-        return parsePartStringResponse(client,request,"token");
+        return parsePartStringResponse(client, request, "token");
     }
 
     @Override
@@ -142,7 +167,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        return parseArrayResponse(client,request,ListedAccountInfo.class);
+        return parseArrayResponse(client, request, ListedAccountInfo.class);
     }
 
     @Override
@@ -154,7 +179,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        return parseObjectResponse(client,request,GettedAccountInfo.class);
+        return parseObjectResponse(client, request, GettedAccountInfo.class);
     }
 
     @Override
@@ -209,7 +234,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        return parseObjectResponse(client,request,CheckedAccountInfo.class);
+        return parseObjectResponse(client, request, CheckedAccountInfo.class);
     }
 
     @Override
@@ -218,7 +243,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .url(SERVICE_URL + "/api2/server-info/")
                 .get()
                 .build();
-        return parseObjectResponse(client,request,ServerInfo.class);
+        return parseObjectResponse(client, request, ServerInfo.class);
     }
 
     @Override
@@ -270,18 +295,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("Authorization", "Token " + token)
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseObject(response.body().string(), DefaultLibraryInfo.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parseObjectResponse(client, request, DefaultLibraryInfo.class);
     }
 
     @Override
@@ -293,18 +307,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("Authorization", "Token " + token)
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseObject(response.body().string(), DefaultLibraryInfo.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parseObjectResponse(client, request, DefaultLibraryInfo.class);
     }
 
     @Override
@@ -316,18 +319,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseArray(response.body().string(), ListedLibraryInfo.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parseArrayResponse(client, request, ListedLibraryInfo.class);
     }
 
     @Override
@@ -351,18 +343,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseObject(response.body().string()).getString("owner");
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parsePartStringResponse(client, request, "owner");
     }
 
     @Override
@@ -374,18 +355,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseArray(JSON.parseObject(response.body().string()).getString("commits"), LibraryHistory.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parsePartArrayResponse(client, request, LibraryHistory.class, "commits");
     }
 
     @Override
@@ -400,18 +370,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseObject(response.body().string(), CreatedLibraryInfo.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parseObjectResponse(client, request, CreatedLibraryInfo.class);
     }
 
     @Override
@@ -427,18 +386,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseObject(response.body().string(), CreatedLibraryInfo.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parseObjectResponse(client, request, CreatedLibraryInfo.class);
     }
 
     @Override
@@ -492,18 +440,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseObject(response.body().string(), FetchedLibraryDownloadInfo.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parseObjectResponse(client, request, FetchedLibraryDownloadInfo.class);
     }
 
     @Override
@@ -516,18 +453,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseObject(response.body().string(), ViewInfo.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parseObjectResponse(client, request, ViewInfo.class);
     }
 
     @Override
@@ -553,18 +479,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseObject(response.body().string(), FileDetail.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parseObjectResponse(client, request, FileDetail.class);
     }
 
     @Override
@@ -577,18 +492,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("indent", "4")
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseArray(JSON.parseObject(response.body().string()).getString("commits"), FileHistory.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parsePartArrayResponse(client, request, FileHistory.class, "commits");
     }
 
     @Override
@@ -690,7 +594,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean copyFile(OkHttpClient client, String token, String repoId, String path, String filename, String dstRepo, String dstDir) {
+    public boolean copyFile(OkHttpClient client, String token, String repoId, String path, String dstRepo, String dstDir, String filename) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("operation", "copy")
                 .add("dst_repo", dstRepo)
@@ -738,22 +642,23 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean uploadFile(OkHttpClient client, String token, String repoId, File file, String parentDir, String replace) {
+    public boolean uploadFile(OkHttpClient client, String token, String repoId, String parentDir, String replace, File file) {
         Request linkRequest = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/upload-link/?p=" + parentDir)
                 .header("Authorization", "Token " + token)
                 .get()
                 .build();
         String uploadLink = parseStringResponse(client, linkRequest);
+        assert uploadLink != null;
+        uploadLink = uploadLink.substring(1, uploadLink.length() - 1);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("application/octet-stream"), file))
                 .addFormDataPart("parent_dir", parentDir)
                 .addFormDataPart("replace", replace)
                 .build();
-        assert uploadLink != null;
         Request uploadRequest = new Request.Builder()
-                .url(uploadLink.substring(1, uploadLink.length() - 1))
+                .url(uploadLink)
                 .header("Authorization", "Token " + token)
                 .post(requestBody)
                 .build();
@@ -761,22 +666,23 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean updateFile(OkHttpClient client, String token, String repoId, File file, String updateDir) {
+    public boolean updateFile(OkHttpClient client, String token, String repoId, String updateDir, File file) {
         Request linkRequest = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/update-link/?p=" + updateDir)
                 .header("Authorization", "Token " + token)
                 .get()
                 .build();
-        String uploadLink = parseStringResponse(client, linkRequest);
+        String updateLink = parseStringResponse(client, linkRequest);
+        assert updateLink != null;
+        updateLink = updateLink.substring(1, updateLink.length() - 1);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("application/octet-stream"), file))
                 .addFormDataPart("filenames", file.getName())
                 .addFormDataPart("target_file", updateDir + "/" + file.getName())
                 .build();
-        assert uploadLink != null;
         Request uploadRequest = new Request.Builder()
-                .url(uploadLink.substring(1, uploadLink.length() - 1))
+                .url(updateLink)
                 .header("Authorization", "Token " + token)
                 .post(requestBody)
                 .build();
@@ -785,42 +691,136 @@ public class SeafileWebApiImpl implements SeafileWebApi {
 
     @Override
     public List<DirectoryEntry> listDirectoryEntries(OkHttpClient client, String token, String repoId, String path) {
-        return null;
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/dir/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .get()
+                .build();
+        return parseArrayResponse(client, request, DirectoryEntry.class);
     }
 
     @Override
     public boolean createNewDirectory(OkHttpClient client, String token, String repoId, String path) {
-        return false;
+        RequestBody requestBody = new FormBody.Builder()
+                .add("operation", "mkdir")
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/dir/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .post(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
     }
 
     @Override
     public boolean renameDirectory(OkHttpClient client, String token, String repoId, String path, String newname) {
-        return false;
+        RequestBody requestBody = new FormBody.Builder()
+                .add("operation", "rename")
+                .add("newname", newname)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/dir/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .post(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
     }
 
     @Override
     public boolean deleteDirectory(OkHttpClient client, String token, String repoId, String path) {
-        return false;
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/dir/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .delete()
+                .build();
+        return parseBooleanResponse(client, request);
     }
 
     @Override
-    public String downloadDirectory(OkHttpClient client, String token, String repoId, String path) {
-        return null;
+    public String downloadDirectory(OkHttpClient client, String token, String repoId, String parentDir, String dirname) {
+        Request zipTokenRequest = new Request.Builder()
+                .url(SERVICE_URL + "/api/v2.1/repos/" + repoId + "/zip-task/?parent_dir=" + parentDir + "&dirents=" + dirname)
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("charset", "utf-8")
+                .header("indent", "4")
+                .get()
+                .build();
+        String zipToken = parsePartStringResponse(client, zipTokenRequest, "zip_token");
+        assert zipToken != null;
+        String zipped, total;
+        do {
+            Request zipRequest = new Request.Builder()
+                    .url(SERVICE_URL + "/api/v2.1/query-zip-progress/?token=" + zipToken)
+                    .header("Authorization", "Token " + token)
+                    .header("Accept", "application/json")
+                    .header("charset", "utf-8")
+                    .header("indent", "4")
+                    .get()
+                    .build();
+            zipped = parsePartStringResponse(client, zipRequest, "zipped");
+            total = parsePartStringResponse(client, zipRequest, "total");
+            assert zipped != null;
+            assert total != null;
+        } while (!zipped.equals(total));
+        return FILE_SERVER_ROOT + "/zip/" + zipToken;
     }
 
     @Override
-    public boolean multiCopy(OkHttpClient client, String token, String path, String dstRepo, String dstDir, String... fileNames) {
-        return false;
+    public boolean multiCopy(OkHttpClient client, String token, String repoId, String path, String dstRepo, String dstDir, String... filenames) {
+        String linkedFilenames = linkFilenames(filenames);
+        RequestBody requestBody = new FormBody.Builder()
+                .add("dst_repo", dstRepo)
+                .add("dst_dir", dstDir)
+                .add("file_names", linkedFilenames)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/fileops/copy/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .post(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
     }
 
     @Override
-    public boolean multiMove(OkHttpClient client, String token, String path, String dstRepo, String dstDir, String... fileNames) {
-        return false;
+    public boolean multiMove(OkHttpClient client, String token, String repoId, String path, String dstRepo, String dstDir, String... filenames) {
+        String linkedFilenames = linkFilenames(filenames);
+        RequestBody requestBody = new FormBody.Builder()
+                .add("dst_repo", dstRepo)
+                .add("dst_dir", dstDir)
+                .add("file_names", linkedFilenames)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/fileops/move/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .post(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
     }
 
     @Override
-    public boolean multiDelete(OkHttpClient client, String token, String path, String... fileNames) {
-        return false;
+    public boolean multiDelete(OkHttpClient client, String token, String repoId, String path, String... filenames) {
+        String linkedFilenames = linkFilenames(filenames);
+        RequestBody requestBody = new FormBody.Builder()
+                .add("file_names", linkedFilenames)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/repos/" + repoId + "/fileops/delete/?p=" + path)
+                .header("Authorization", "Token " + token)
+                .post(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
     }
 
     @Override
@@ -844,17 +844,6 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .header("Authorization", "Token " + token)
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return JSON.parseObject(response.body().string(), AvatarInfo.class);
-            } else {
-                throw new IOException("Unexpected code " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return parseObjectResponse(client, request, AvatarInfo.class);
     }
 }

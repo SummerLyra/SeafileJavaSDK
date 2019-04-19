@@ -6,7 +6,7 @@ import static java.time.temporal.ChronoUnit.MICROS;
 
 /**
  * @author freezingrainnyu
- * @version 1.3
+ * @version 1.5
  * @date 2019/04/17
  */
 public class GettedAccountInfo extends CheckedAccountInfo {

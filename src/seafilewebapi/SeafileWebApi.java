@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * @author freezingrainyu
- * @version 1.3
+ * @version 1.5
  * @date 2019/04/16
  */
 public interface SeafileWebApi {
@@ -439,12 +439,12 @@ public interface SeafileWebApi {
      * @param token    token of current account
      * @param repoId   library id where the file will be copied in
      * @param path     file path which will be copied
-     * @param filename filename which will be copied
      * @param dstRepo  library id where the file will be copied to
      * @param dstDir   file path where will be copied to
+     * @param filename filename which will be copied
      * @return copy successfully or not
      */
-    boolean copyFile(OkHttpClient client, String token, String repoId, String path, String filename, String dstRepo, String dstDir);
+    boolean copyFile(OkHttpClient client, String token, String repoId, String path, String dstRepo, String dstDir, String filename);
 
     /**
      * revert a specified file
@@ -483,7 +483,7 @@ public interface SeafileWebApi {
      * @param replace   whether to overwrite existing files: 0(not overwrite, default) and 1(overwrite)
      * @return upload successfully or not
      */
-    boolean uploadFile(OkHttpClient client, String token, String repoId, File file, String parentDir, String replace);
+    boolean uploadFile(OkHttpClient client, String token, String repoId, String parentDir, String replace, File file);
 
     /**
      * update an existed file
@@ -496,27 +496,116 @@ public interface SeafileWebApi {
      * @param updateDir file path where will be updated to
      * @return update successfully or not
      */
-    boolean updateFile(OkHttpClient client, String token, String repoId, File file, String updateDir);
+    boolean updateFile(OkHttpClient client, String token, String repoId, String updateDir, File file);
 
     /* module Directory */
 
+    /**
+     * obtain a list of all entries of a specified directory
+     * TESTED
+     *
+     * @param client OkHttpClient object
+     * @param token  token of current account
+     * @param repoId library id where the directory whose entry will be getted in
+     * @param path   directory path whose entry will be getted
+     * @return list of DirectoryEntry objects with info in
+     */
     List<DirectoryEntry> listDirectoryEntries(OkHttpClient client, String token, String repoId, String path);
 
+    /**
+     * create a new directory
+     * TESTED
+     *
+     * @param client OkHttpClient object
+     * @param token  token of current account
+     * @param repoId library id where the new directory will be placed in
+     * @param path   path and  name of the new directory
+     * @return create successfully or not
+     */
     boolean createNewDirectory(OkHttpClient client, String token, String repoId, String path);
 
+    /**
+     * rename an existed directory
+     * TESTED
+     *
+     * @param client  OkHttpClient object
+     * @param token   token of current account
+     * @param repoId  library id where the directory will be renamed in
+     * @param path    directory path which will be renamed
+     * @param newname new name of the directory
+     * @return rename successfully or not
+     */
     boolean renameDirectory(OkHttpClient client, String token, String repoId, String path, String newname);
 
+    /**
+     * delete an existed directory
+     * TESTED
+     *
+     * @param client OkHttpClient object
+     * @param token  token of current account
+     * @param repoId library id where the directory will be deleted in
+     * @param path   directory path which will be deleted
+     * @return delete successfully or not
+     */
     boolean deleteDirectory(OkHttpClient client, String token, String repoId, String path);
 
-    String downloadDirectory(OkHttpClient client, String token, String repoId, String path);
+    /**
+     * fetch a download link of a specified directory
+     * TESTED
+     *
+     * @param client    OkHttpClient object
+     * @param token     token of current user
+     * @param repoId    library id where the directory will be downloaded in
+     * @param parentDir directory path without name of directory
+     * @param dirname   name of directory
+     * @return download link of directory
+     */
+    String downloadDirectory(OkHttpClient client, String token, String repoId, String parentDir, String dirname);
 
     /* module Multiple Files or Directories */
 
-    boolean multiCopy(OkHttpClient client, String token, String path, String dstRepo, String dstDir, String... fileNames);
+    /**
+     * copy a specified series of files
+     * TESTED
+     *
+     * @param client    OkHttpClient object
+     * @param token     token of current account
+     * @param repoId    library id where the files will be copied in
+     * @param path      file path which will be copied
+     * @param dstRepo   library id where the files will be copied to
+     * @param dstDir    file path where will be copied to
+     * @param filenames filename which will be copied
+     * @return copy successfully or not
+     */
+    boolean multiCopy(OkHttpClient client, String token, String repoId, String path, String dstRepo, String dstDir, String... filenames);
 
-    boolean multiMove(OkHttpClient client, String token, String path, String dstRepo, String dstDir, String... fileNames);
+    /**
+     * move a specified series of files
+     * TESTED
+     *
+     * @param client    OkHttpClient object
+     * @param token     token of current account
+     * @param repoId    library id where the files will be move in
+     * @param path      file path which will be moved
+     * @param dstRepo   library id where the files will be moved to
+     * @param dstDir    file path where will be moved to
+     * @param filenames filename which will be moved
+     * @return move successfully or not
+     */
+    boolean multiMove(OkHttpClient client, String token, String repoId, String path, String dstRepo, String dstDir, String... filenames);
 
-    boolean multiDelete(OkHttpClient client, String token, String path, String... fileNames);
+    /**
+     * delete a series of existed files
+     * TESTED
+     *
+     * @param client    OkHttpClient object
+     * @param token     token of current account
+     * @param repoId    library id where the files will be deleted in
+     * @param path      file path which will be deleted
+     * @param filenames filename which will be deleted
+     * @return delete successfully or not
+     */
+    boolean multiDelete(OkHttpClient client, String token, String repoId, String path, String... filenames);
 
     /* module Avatar */
 

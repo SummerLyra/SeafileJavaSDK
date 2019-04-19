@@ -6,7 +6,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 /**
  * @author freezingrainnyu
- * @version 1.1
+ * @version 1.5
  * @date 2019/04/18
  */
 public class FileDetail {

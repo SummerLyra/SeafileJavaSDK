@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * @author freezingrainnyu
- * @version 1.0
+ * @version 1.5
  * @date 2019/04/17
  */
 public class ServerInfo {

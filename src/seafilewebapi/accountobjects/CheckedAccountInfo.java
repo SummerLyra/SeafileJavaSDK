@@ -2,7 +2,7 @@ package seafilewebapi.accountobjects;
 
 /**
  * @author freezingrainnyu
- * @version 1.3
+ * @version 1.5
  * @date 2019/04/17
  */
 public class CheckedAccountInfo {

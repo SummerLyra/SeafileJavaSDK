@@ -6,8 +6,8 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 /**
  * @author freezingrainnyu
- * @version 1.1
- * @date 2019/04/18
+ * @version 1.5
+ * @date 2019/04/19
  */
 public class AvatarInfo {
 
@@ -15,10 +15,10 @@ public class AvatarInfo {
     private boolean isDefault;
     private String mtime;
 
-    public AvatarInfo(String url,boolean isDefault,long mtime){
-        this.url=url;
-        this.isDefault=isDefault;
-        this.mtime= Instant.EPOCH.plus(mtime, SECONDS).toString();
+    public AvatarInfo(String url, boolean isDefault, long mtime) {
+        this.url = url;
+        this.isDefault = isDefault;
+        this.mtime = Instant.EPOCH.plus(mtime, SECONDS).toString();
     }
 
     public String getUrl() {

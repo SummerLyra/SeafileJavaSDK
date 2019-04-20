@@ -1,4 +1,4 @@
-package accountobjects;
+package seafilejavasdk.accountobjects;
 
 /**
  * @author freezingrainnyu

@@ -1,4 +1,4 @@
-package libraryobjects;
+package seafilejavasdk.libraryobjects;
 
 import java.time.Instant;
 

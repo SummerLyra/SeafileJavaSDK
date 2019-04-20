@@ -1,12 +1,12 @@
 package seafilejavasdk;
 
-import accountobjects.*;
-import avatarobjects.*;
-import directoryobjects.*;
-import fileobjects.*;
-import libraryobjects.*;
+import seafilejavasdk.accountobjects.*;
+import seafilejavasdk.avatarobjects.*;
+import seafilejavasdk.directoryobjects.*;
+import seafilejavasdk.fileobjects.*;
+import seafilejavasdk.libraryobjects.*;
 import okhttp3.OkHttpClient;
-import starredfileobjects.*;
+import seafilejavasdk.starredfileobjects.*;
 
 import java.io.File;
 import java.util.List;

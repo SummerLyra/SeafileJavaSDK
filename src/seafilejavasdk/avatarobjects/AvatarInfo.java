@@ -1,4 +1,4 @@
-package avatarobjects;
+package seafilejavasdk.avatarobjects;
 
 import java.time.Instant;
 

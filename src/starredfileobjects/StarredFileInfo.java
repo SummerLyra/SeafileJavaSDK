@@ -1,4 +1,4 @@
-package seafilejavasdk.starredfileobjects;
+package starredfileobjects;
 
 import java.time.Instant;
 

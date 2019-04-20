@@ -1,4 +1,4 @@
-package seafilejavasdk.accountobjects;
+package accountobjects;
 
 import java.util.List;
 

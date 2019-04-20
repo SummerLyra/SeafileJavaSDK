@@ -1,18 +1,18 @@
 package seafilejavasdk;
 
+import accountobjects.*;
+import avatarobjects.*;
 import com.alibaba.fastjson.JSON;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import directoryobjects.*;
+import fileobjects.*;
+import libraryobjects.*;
 import okhttp3.*;
-import seafilejavasdk.accountobjects.*;
-import seafilejavasdk.avatarobjects.*;
-import seafilejavasdk.directoryobjects.*;
-import seafilejavasdk.fileobjects.*;
-import seafilejavasdk.libraryobjects.*;
-import seafilejavasdk.starredfileobjects.*;
+import starredfileobjects.*;
 
 /**
  * @author freezingrainyu

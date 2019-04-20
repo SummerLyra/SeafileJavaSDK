@@ -1,4 +1,6 @@
-package seafilejavasdk.accountobjects;
+package accountobjects;
+
+import accountobjects.CheckedAccountInfo;
 
 import java.time.Instant;
 

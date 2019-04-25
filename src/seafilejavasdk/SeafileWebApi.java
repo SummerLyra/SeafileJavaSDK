@@ -41,6 +41,18 @@ public interface SeafileWebApi {
     String obtainAuthToken(OkHttpClient client, String username, String password);
 
     /**
+     * obtain the token of a specified account with a one-time token
+     * TESTED
+     *
+     * @param client   OkHttpClient object
+     * @param username username whose token will be obtained
+     * @param password password of the account
+     * @param otp      one-time token
+     * @return token of specified user
+     */
+    String obtainAuthToken(OkHttpClient client, String username, String password, String otp);
+
+    /**
      * ping with a valid token
      * TESTED
      *
@@ -87,6 +99,84 @@ public interface SeafileWebApi {
      * @return create successfully or not
      */
     boolean createAccount(OkHttpClient client, String token, String username, String password);
+
+    /**
+     * update password of a specified account
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param client   OkHttpClient object
+     * @param token    token of admin
+     * @param username username whose password will be updated
+     * @param password new password
+     * @return update successfully or not
+     */
+    boolean updatePassword(OkHttpClient client, String token, String username, String password);
+
+    /**
+     * update isStaff of a specified account
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param client   OkHttpClient object
+     * @param token    token of admin
+     * @param username username whose isStaff will be updated
+     * @param isStaff  new isStaff
+     * @return update successfully or not
+     */
+    boolean updateIsStaff(OkHttpClient client, String token, String username, boolean isStaff);
+
+    /**
+     * update isActive of a specified account
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param client   OkHttpClient object
+     * @param token    token of admin
+     * @param username username whose isActive will be updated
+     * @param isActive new isActive
+     * @return update successfully or not
+     */
+    boolean updateIsActive(OkHttpClient client, String token, String username, boolean isActive);
+
+    /**
+     * update name of a specified account
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param client   OkHttpClient object
+     * @param token    token of admin
+     * @param username username whose name will be updated
+     * @param name     new name
+     * @return update successfully or not
+     */
+    boolean updateName(OkHttpClient client, String token, String username, String name);
+
+    /**
+     * update note of a specified account
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param client   OkHttpClient object
+     * @param token    token of admin
+     * @param username username whose note will be updated
+     * @param note     new note
+     * @return update successfully or not
+     */
+    boolean updateNote(OkHttpClient client, String token, String username, String note);
+
+    /**
+     * update storage of a specified account
+     * ADMIN ONLY
+     * TESTED
+     *
+     * @param client   OkHttpClient object
+     * @param token    token of admin
+     * @param username username whose storage will be updated
+     * @param storage  new storage
+     * @return update successfully or not
+     */
+    boolean updateStorage(OkHttpClient client, String token, String username, long storage);
 
     /**
      * migrate all libraries of one account to another one
@@ -274,10 +364,10 @@ public interface SeafileWebApi {
      * @param client  OkHttpClient object
      * @param token   token of current account
      * @param repoId  library id which will be renamed
-     * @param newname new name of the library
+     * @param newName new name of the library
      * @return rename successfully or not
      */
-    boolean renameLibrary(OkHttpClient client, String token, String repoId, String newname);
+    boolean renameLibrary(OkHttpClient client, String token, String repoId, String newName);
 
     /**
      * decrypt an encrypted library
@@ -386,10 +476,10 @@ public interface SeafileWebApi {
      * @param token   token of current account
      * @param repoId  library id where the file will be renamed in
      * @param path    file path which will be renamed
-     * @param newname new name of the file
+     * @param newName new name of the file
      * @return rename successfully or not
      */
-    boolean renameFile(OkHttpClient client, String token, String repoId, String path, String newname);
+    boolean renameFile(OkHttpClient client, String token, String repoId, String path, String newName);
 
     /**
      * lock a specified file
@@ -532,10 +622,10 @@ public interface SeafileWebApi {
      * @param token   token of current account
      * @param repoId  library id where the directory will be renamed in
      * @param path    directory path which will be renamed
-     * @param newname new name of the directory
+     * @param newName new name of the directory
      * @return rename successfully or not
      */
-    boolean renameDirectory(OkHttpClient client, String token, String repoId, String path, String newname);
+    boolean renameDirectory(OkHttpClient client, String token, String repoId, String path, String newName);
 
     /**
      * delete an existed directory
@@ -557,10 +647,10 @@ public interface SeafileWebApi {
      * @param token     token of current user
      * @param repoId    library id where the directory will be downloaded in
      * @param parentDir directory path without name of directory
-     * @param dirname   name of directory
+     * @param dirName   name of directory
      * @return download link of directory
      */
-    String downloadDirectory(OkHttpClient client, String token, String repoId, String parentDir, String dirname);
+    String downloadDirectory(OkHttpClient client, String token, String repoId, String parentDir, String dirName);
 
     /* module Multiple Files or Directories */
 

@@ -149,6 +149,20 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
+    public String obtainAuthToken(OkHttpClient client, String username, String password, String otp) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("username", username)
+                .add("password", password)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/auth-token/")
+                .header("X_SEAFILE_OTP", otp)
+                .post(requestBody)
+                .build();
+        return parsePartStringResponse(client, request, "token");
+    }
+
+    @Override
     public String authPing(OkHttpClient client, String token) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/auth/ping/")
@@ -186,6 +200,96 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     public boolean createAccount(OkHttpClient client, String token, String username, String password) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("password", password)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/accounts/" + username + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .put(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
+    }
+
+    @Override
+    public boolean updatePassword(OkHttpClient client, String token, String username, String password) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("password", password)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/accounts/" + username + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .put(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
+    }
+
+    @Override
+    public boolean updateIsStaff(OkHttpClient client, String token, String username, boolean isStaff) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("is_staff", String.valueOf(isStaff))
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/accounts/" + username + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .put(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
+    }
+
+    @Override
+    public boolean updateIsActive(OkHttpClient client, String token, String username, boolean isActive) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("is_active", String.valueOf(isActive))
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/accounts/" + username + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .put(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
+    }
+
+    @Override
+    public boolean updateName(OkHttpClient client, String token, String username, String name) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("name", name)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/accounts/" + username + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .put(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
+    }
+
+    @Override
+    public boolean updateNote(OkHttpClient client, String token, String username, String note) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("note", note)
+                .build();
+        Request request = new Request.Builder()
+                .url(SERVICE_URL + "/api2/accounts/" + username + "/")
+                .header("Authorization", "Token " + token)
+                .header("Accept", "application/json")
+                .header("indent", "4")
+                .put(requestBody)
+                .build();
+        return parseBooleanResponse(client, request);
+    }
+
+    @Override
+    public boolean updateStorage(OkHttpClient client, String token, String username, long storage) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("storage", String.valueOf(storage))
                 .build();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/accounts/" + username + "/")
@@ -402,9 +506,9 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean renameLibrary(OkHttpClient client, String token, String repoId, String newname) {
+    public boolean renameLibrary(OkHttpClient client, String token, String repoId, String newName) {
         RequestBody requestBody = new FormBody.Builder()
-                .add("repo_name", newname)
+                .add("repo_name", newName)
                 .build();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/?op=rename")
@@ -525,10 +629,10 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean renameFile(OkHttpClient client, String token, String repoId, String path, String newname) {
+    public boolean renameFile(OkHttpClient client, String token, String repoId, String path, String newName) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("operation", "rename")
-                .add("newname", newname)
+                .add("newname", newName)
                 .build();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/file/?p=" + path)
@@ -718,10 +822,10 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean renameDirectory(OkHttpClient client, String token, String repoId, String path, String newname) {
+    public boolean renameDirectory(OkHttpClient client, String token, String repoId, String path, String newName) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("operation", "rename")
-                .add("newname", newname)
+                .add("newname", newName)
                 .build();
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/dir/?p=" + path)
@@ -748,9 +852,9 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public String downloadDirectory(OkHttpClient client, String token, String repoId, String parentDir, String dirname) {
+    public String downloadDirectory(OkHttpClient client, String token, String repoId, String parentDir, String dirName) {
         Request zipTokenRequest = new Request.Builder()
-                .url(SERVICE_URL + "/api/v2.1/repos/" + repoId + "/zip-task/?parent_dir=" + parentDir + "&dirents=" + dirname)
+                .url(SERVICE_URL + "/api/v2.1/repos/" + repoId + "/zip-task/?parent_dir=" + parentDir + "&dirents=" + dirName)
                 .header("Authorization", "Token " + token)
                 .header("Accept", "application/json")
                 .header("charset", "utf-8")

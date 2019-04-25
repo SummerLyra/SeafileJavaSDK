@@ -29,4 +29,5 @@ hs_err_pid*
 *.iws
 
 /out
+/src/*.java
 **/META-INF

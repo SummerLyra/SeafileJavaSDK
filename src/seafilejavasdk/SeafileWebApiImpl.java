@@ -942,7 +942,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public AvatarInfo getUserAvatar(OkHttpClient client, String token, String username, String size) {
+    public AvatarInfo getUserAvatar(OkHttpClient client, String token, String username, int size) {
         Request request = new Request.Builder()
                 .url(SERVICE_URL + "/api2/avatars/user/" + username + "/resized/" + size + "/")
                 .header("Authorization", "Token " + token)

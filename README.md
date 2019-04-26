@@ -21,14 +21,17 @@ Last updated on 2019/04/20
 2. Add `import seafilejavasdk.*` in your Java files
 3. Enjoy it!
 
+---
+
 ## Support Status
 
-Last updated on 2019/04/20
+Last updated on 2019/04/26
 
-- ✔️️ Tested and supported
-- ❌ Not supported yet / To be supported
+- ✔️️ Supported and tested
 - 🚩 Supported but not tested
+- ❌ Not supported yet / To be supported
 - ⭕️ This interface is provided in [Seafile Web API v2.1](https://github.com/FreezingRainYu/SeafileJavaSDK/blob/master/web_api_v2.1.md), or broken in SWA v2.0 but available in SWA v2.1
+- ~~❌~~ This interface is no longer provided in SWA v2.1
 
 | Interface | Status | Interface | Status |
 | -- | :--: | -- | :--: |
@@ -38,10 +41,10 @@ Last updated on 2019/04/20
 | Auth Ping | ✔️ | | |
 | | | | |
 | **module** ***Account*** | | | |
-| List Accounts (Admin only) | ✔️ | Get Account Info (Admin only) | ✔️ |
-| Create Accounts (Admin only) | ✔️ | Update Account (Admin only) | ❌ |
-| Migrate Accounts (Admin only) | ✔️ | Delete Account (Admin only) | ✔️ |
-| Force 2FA (Admin only) | ❌ | Ckeck Account Info | ✔️ |
+| List Accounts (ADMIN ONLY) | ✔️ | Get Account Info (ADMIN ONLY) | ✔️ |
+| Create Accounts (ADMIN ONLY) | ✔️ | Update Account (ADMIN ONLY) | ✔️ |
+| Migrate Accounts (ADMIN ONLY) | ✔️ | Delete Account (ADMIN ONLY) | ✔️ |
+| ~~Force 2-Factor Auth (ADMIN ONLY)~~ | ~~❌~~ | Ckeck Account Info | ✔️ |
 | Get Server Info | ✔️ | | |
 | | | | |
 | **module** ***Starred Files*** | | | |
@@ -56,18 +59,18 @@ Last updated on 2019/04/20
 | Get Default Library | ✔️ | Create Default Library | ✔️ |
 | List Libraries | ✔️ | Get Library Info | ✔️ |
 | Get Library Owner | ✔️ | Get Library History | ✔️ |
-| Create Library | ✔️ | Check/Create Sub Library | ❌ |
+| Create Library | ✔️ | Check / Create Sub Library | ❌ |
 | Delete Library | ✔️ | Rename Library | ✔️ |
 | Decrypt Library | ✔️ | Create Public Library | ❌ |
 | Remove Public Library | ❌ | Fetch Library Download Info | ✔️ |
 | List Virtual Libraries | ❌ | Search Libraries | ❌ |
 | | | | |
 | **module** ***File*** | | | |
-| View File Through OWA | 🚩 | Download File | ✔️ |
+| View File through OWA (PRO EDITION ONLY) | 🚩 | Download File | ✔️ |
 | Get File Detail | ✔️ | Get File History | ✔️ |
 | Download File from a Revision | ✔️ | Create File | ✔️ |
-| Rename File | ✔️ | Lock File | 🚩 |
-| Unlock File | 🚩 | Move File | ✔️ |
+| Rename File | ✔️ | Lock File (PRO EDITION ONLY) | 🚩 |
+| Unlock File (PRO EDITION ONLY) | 🚩 | Move File | ✔️ |
 | Copy File | ✔️ | Revert File | ✔️ |
 | Delete File | ✔️ | Upload File | ✔️ |
 | Update File | ✔️ | Get Upload Blocks Link | ❌ |

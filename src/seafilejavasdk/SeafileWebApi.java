@@ -173,7 +173,7 @@ public interface SeafileWebApi {
      * @param client   OkHttpClient object
      * @param token    token of admin
      * @param username username whose storage will be updated
-     * @param storage  new storage
+     * @param storage  new storage (MB)
      * @return update successfully or not
      */
     boolean updateStorage(OkHttpClient client, String token, String username, long storage);
@@ -720,5 +720,5 @@ public interface SeafileWebApi {
      * @param size     getted picture size
      * @return AvatarInfo object with info in
      */
-    AvatarInfo getUserAvatar(OkHttpClient client, String token, String username, String size);
+    AvatarInfo getUserAvatar(OkHttpClient client, String token, String username, int size);
 }

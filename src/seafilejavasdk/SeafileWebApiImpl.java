@@ -213,17 +213,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
 
     @Override
     public boolean updatePassword(OkHttpClient client, String token, String username, String password) {
-        RequestBody requestBody = new FormBody.Builder()
-                .add("password", password)
-                .build();
-        Request request = new Request.Builder()
-                .url(SERVICE_URL + "/api2/accounts/" + username + "/")
-                .header("Authorization", "Token " + token)
-                .header("Accept", "application/json")
-                .header("indent", "4")
-                .put(requestBody)
-                .build();
-        return parseBooleanResponse(client, request);
+        return createAccount(client, token, username, password);
     }
 
     @Override
@@ -746,7 +736,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
     }
 
     @Override
-    public boolean uploadFile(OkHttpClient client, String token, String repoId, String parentDir, String replace, File file) {
+    public boolean uploadFile(OkHttpClient client, String token, String repoId, String parentDir, int replace, File file) {
         Request linkRequest = new Request.Builder()
                 .url(SERVICE_URL + "/api2/repos/" + repoId + "/upload-link/?p=" + parentDir)
                 .header("Authorization", "Token " + token)
@@ -759,7 +749,7 @@ public class SeafileWebApiImpl implements SeafileWebApi {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("application/octet-stream"), file))
                 .addFormDataPart("parent_dir", parentDir)
-                .addFormDataPart("replace", replace)
+                .addFormDataPart("replace", String.valueOf(replace))
                 .build();
         Request uploadRequest = new Request.Builder()
                 .url(uploadLink)

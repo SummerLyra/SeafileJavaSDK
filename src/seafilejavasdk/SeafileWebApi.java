@@ -573,7 +573,7 @@ public interface SeafileWebApi {
      * @param replace   whether to overwrite existing files: 0(not overwrite, default) and 1(overwrite)
      * @return upload successfully or not
      */
-    boolean uploadFile(OkHttpClient client, String token, String repoId, String parentDir, String replace, File file);
+    boolean uploadFile(OkHttpClient client, String token, String repoId, String parentDir, int replace, File file);
 
     /**
      * update an existed file
@@ -717,7 +717,7 @@ public interface SeafileWebApi {
      * @param client   OkHttpClient object
      * @param token    token of current account
      * @param username username whose avatar will be getted
-     * @param size     getted picture size
+     * @param size     size of getted picture
      * @return AvatarInfo object with info in
      */
     AvatarInfo getUserAvatar(OkHttpClient client, String token, String username, int size);

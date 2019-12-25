@@ -15,7 +15,7 @@ import okhttp3.*;
 import seafilejavasdk.starredfileobjects.*;
 
 /**
- * @author freezingrainyu
+ * @author liudongyu1119@outlook.com
  * @version 1.5
  * @date 2019/04/16
  */

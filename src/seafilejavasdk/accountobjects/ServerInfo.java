@@ -3,7 +3,7 @@ package seafilejavasdk.accountobjects;
 import java.util.List;
 
 /**
- * @author freezingrainnyu
+ * @author liudongyu1119@outlook.com
  * @version 1.5
  * @date 2019/04/17
  */
